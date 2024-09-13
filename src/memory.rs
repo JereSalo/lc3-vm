@@ -8,4 +8,8 @@ impl Memory {
     pub fn new() -> Self {
         Memory { memory: [0;MEMORY_MAX] }
     }
+
+    pub fn read(&self, position: usize) -> u16 {
+        self.memory[position]
+    }
 }
