@@ -1,4 +1,5 @@
-use crate::{memory::Memory, registers::Registers,opcode::Opcode};
+use crate::{memory::Memory, registers::Registers, opcode::Opcode};
+use std::convert::TryFrom;
 
 const PC_START: u16 = 0x3000;
 
@@ -9,49 +10,53 @@ pub struct VM {
 
 impl VM {
     pub fn new() -> Self {
-        VM { registers: Registers::new(), memory: Memory::new() }
+        VM {
+            registers: Registers::new(),
+            memory: Memory::new(),
+        }
     }
 
     pub fn run(&mut self) {
         self.registers.pc = PC_START;
 
         loop {
-            // Memory has instructions. PC points to memory
-
+            // Fetch instruction from memory
             let instruction_address: usize = self.registers.pc.into();
-
-            // Load instruction
-            let instr = self.memory.read(instruction_address);
+            let instruction = self.memory.read(instruction_address);
 
             // Increment PC
             self.registers.pc += 1;
 
-            let opcode = instr >> 12;
-
-            self.call_instruction(opcode)
-
+            // Decode opcode
+            let raw_opcode = instruction >> 12;
+            match Opcode::try_from(raw_opcode) {
+                Ok(opcode) => self.execute_instruction(opcode),
+                Err(_) => {
+                    eprintln!("Unknown opcode: {:#X}", raw_opcode);
+                    break;
+                }
+            }
         }
     }
 
-    fn call_instruction(&mut self, opcode: u16) {
+    fn execute_instruction(&mut self, opcode: Opcode) {
         match opcode {
-            0  => self.op_add(),
-            1  => self.op_and(),
-            2  => self.op_not(),
-            3  => self.op_br(),
-            4  => self.op_jmp(),
-            5  => self.op_jsr(),
-            6  => self.op_ld(),
-            7  => self.op_ldi(),
-            8  => self.op_ldr(),
-            9  => self.op_lea(),
-            10 => self.op_st(),
-            11 => self.op_sti(),
-            12 => self.op_str(),
-            13 => self.op_trap(),
-            14 => self.op_res(),
-            15 => self.op_rti(),
-            _  => {}
+            Opcode::OpAdd => self.op_add(),
+            Opcode::OpAnd => self.op_and(),
+            Opcode::OpNot => self.op_not(),
+            Opcode::OpBr => self.op_br(),
+            Opcode::OpJmp => self.op_jmp(),
+            Opcode::OpJsr => self.op_jsr(),
+            Opcode::OpLd => self.op_ld(),
+            Opcode::OpLdi => self.op_ldi(),
+            Opcode::OpLdr => self.op_ldr(),
+            Opcode::OpLea => self.op_lea(),
+            Opcode::OpSt => self.op_st(),
+            Opcode::OpSti => self.op_sti(),
+            Opcode::OpStr => self.op_str(),
+            Opcode::OpTrap => self.op_trap(),
+            Opcode::OpRes => self.op_res(),
+            Opcode::OpRti => self.op_rti(),
         }
     }
 }
