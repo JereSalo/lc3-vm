@@ -1,5 +1,4 @@
 use crate::{memory::Memory, registers::Registers, opcode::Opcode};
-use std::convert::TryFrom;
 
 const PC_START: u16 = 0x3000;
 

@@ -1,6 +1,6 @@
-mod registers;
-mod memory;
+pub mod registers;
+pub mod memory;
 pub mod vm;
-mod condition_flag;
-mod opcode;
+pub mod condition_flag;
+pub mod opcode;
 pub mod instructions;

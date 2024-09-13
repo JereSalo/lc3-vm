@@ -1,8 +1,8 @@
 use crate::condition_flag::ConditionFlag;
 
 pub struct Registers {
-    pub general: [u16;8],
-    pub pc: u16,
+    pub general: [u16;8], // General purpose registers
+    pub pc: u16, // Program Counter
     pub cond: ConditionFlag
 }
 
