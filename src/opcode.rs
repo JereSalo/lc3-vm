@@ -1,4 +1,4 @@
-pub enum opcode {
+pub enum Opcode {
     OpAdd,
     OpAnd,
     OpNot,
@@ -7,6 +7,7 @@ pub enum opcode {
     OpJsr,
     OpLd,
     OpLdi,
+    OpLdr,
     OpLea,
     OpSt,
     OpSti,
