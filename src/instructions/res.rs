@@ -1,5 +1,7 @@
+use crate::vm::VM;
+
 impl VM {
-    pub fn op_res(){
+    pub fn op_res(&self){
         
     }
 }

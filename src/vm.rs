@@ -33,7 +33,7 @@ impl VM {
         }
     }
 
-    fn call_instruction(&self, opcode: u16) {
+    fn call_instruction(&mut self, opcode: u16) {
         match opcode {
             0  => self.op_add(),   // OpAdd
             1  => self.op_and(),   // OpAnd

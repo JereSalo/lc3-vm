@@ -1,5 +1,6 @@
 mod registers;
 mod memory;
-mod vm;
+pub mod vm;
 mod condition_flag;
 mod opcode;
+pub mod instructions;

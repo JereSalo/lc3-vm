@@ -1,5 +1,7 @@
+use crate::vm::VM;
+
 impl VM {
-    pub fn op_not(){
+    pub fn op_not(&self){
         
     }
 }
