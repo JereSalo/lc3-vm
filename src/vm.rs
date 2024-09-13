@@ -35,23 +35,23 @@ impl VM {
 
     fn call_instruction(&mut self, opcode: u16) {
         match opcode {
-            0  => self.op_add(),   // OpAdd
-            1  => self.op_and(),   // OpAnd
-            2  => self.op_not(),   // OpNot
-            3  => self.op_br(),    // OpBr
-            4  => self.op_jmp(),   // OpJmp
-            5  => self.op_jsr(),   // OpJsr
-            6  => self.op_ld(),    // OpLd
-            7  => self.op_ldi(),   // OpLdi
-            8  => self.op_ldr(),   // OpLdr (new addition)
-            9  => self.op_lea(),   // OpLea
-            10 => self.op_st(),    // OpSt
-            11 => self.op_sti(),   // OpSti
-            12 => self.op_str(),   // OpStr
-            13 => self.op_trap(),  // OpTrap
-            14 => self.op_res(),   // OpRes
-            15 => self.op_rti(),   // OpRti
-            _  => {}               // Fallback for invalid opcodes
+            0  => self.op_add(),
+            1  => self.op_and(),
+            2  => self.op_not(),
+            3  => self.op_br(),
+            4  => self.op_jmp(),
+            5  => self.op_jsr(),
+            6  => self.op_ld(),
+            7  => self.op_ldi(),
+            8  => self.op_ldr(),
+            9  => self.op_lea(),
+            10 => self.op_st(),
+            11 => self.op_sti(),
+            12 => self.op_str(),
+            13 => self.op_trap(),
+            14 => self.op_res(),
+            15 => self.op_rti(),
+            _  => {}
         }
     }
 }
