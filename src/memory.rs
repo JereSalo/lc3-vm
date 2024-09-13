@@ -5,7 +5,7 @@ pub struct Memory {
 }
 
 impl Memory {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Memory { memory: [0;MEMORY_MAX] }
     }
 }

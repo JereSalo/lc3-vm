@@ -6,3 +6,9 @@ pub struct Registers {
     cond: ConditionFlag
 }
 
+impl Registers {
+    pub fn new() -> Self {
+        Registers { general: [0;8], pc: 0, cond: ConditionFlag::Zro }
+    }
+}
+
