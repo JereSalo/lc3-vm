@@ -3,28 +3,28 @@ use crate::{memory::Memory, registers::Registers, opcode::Opcode};
 const PC_START: u16 = 0x3000;
 
 pub struct VM {
-    registers: Registers,
-    memory: Memory,
+    reg: Registers,
+    mem: Memory,
 }
 
 impl VM {
     pub fn new() -> Self {
         VM {
-            registers: Registers::new(),
-            memory: Memory::new(),
+            reg: Registers::new(),
+            mem: Memory::new(),
         }
     }
 
     pub fn run(&mut self) {
-        self.registers.pc = PC_START;
+        self.reg.pc = PC_START;
 
         loop {
             // Fetch instruction from memory
-            let instruction_address: usize = self.registers.pc.into();
-            let instruction = self.memory.read(instruction_address);
+            let instruction_address: usize = self.reg.pc.into();
+            let instruction = self.mem.read(instruction_address);
 
             // Increment PC
-            self.registers.pc += 1;
+            self.reg.pc += 1;
 
             // Decode opcode
             let raw_opcode = instruction >> 12;
