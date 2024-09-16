@@ -1,7 +1,7 @@
 use crate::vm::VM;
 
 impl VM {
-    pub fn op_str(&self){
-        
+    pub fn op_str(&mut self, instr: u16) {
+
     }
 }
