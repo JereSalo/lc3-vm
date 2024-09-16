@@ -13,16 +13,15 @@ impl VM {
         // Flag that indicates mode (Immediate || Register)
         let imm_flag = (instr >> 5) & 0x1;
 
-        let final_value;
-        if imm_flag == 1 {
+        let final_value = if imm_flag == 1 {
             // Immediate mode: sign-extend the 5-bit immediate value to a 16bit one.
             let imm5 = sign_extend(instr & 0x1F, 5);
-            final_value = self.reg.general[r1] & imm5; // Bitwise and
+            self.reg.general[r1] & imm5 // Bitwise and
         } else {
             // Register mode: add the contents of the registers
             let r2: usize = (instr & 0x7).into();
-            final_value = self.reg.general[r1] & self.reg.general[r2]; // Bitwise and
-        }
+            self.reg.general[r1] & self.reg.general[r2] // Bitwise and
+        };
         // I used wrapping_add because it handles overflow cases correctly
 
         self.reg.update(r0, final_value);

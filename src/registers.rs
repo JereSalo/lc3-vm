@@ -6,6 +6,12 @@ pub struct Registers {
     pub cond: ConditionFlag
 }
 
+impl Default for Registers {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Registers {
     pub fn new() -> Self {
         Registers { general: [0;8], pc: 0, cond: ConditionFlag::Zro }
