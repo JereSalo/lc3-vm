@@ -10,7 +10,7 @@ impl VM {
         // Offset from PC (Program Counter)
         let pc_offset: u16 = sign_extend(instr & 0x1FF, 9);
 
-        // let position: usize = (self.reg.pc + pc_offset).into(); 
+        // Use of wrapping_add for handling overflow cases (that happen when adding to a sign-extended negative number)
         let position: usize = self.reg.pc.wrapping_add(pc_offset).into();
 
         let value = self.mem.read(self.mem.read(position).into());
@@ -18,8 +18,6 @@ impl VM {
         self.reg.update(r0, value);
     }
 }
-
-
 
 #[cfg(test)]
 mod tests {
