@@ -3,7 +3,7 @@ use lc3_vm::vm::VM;
 fn main() {
     // Load Arguments
     load_arguments();
-    
+
     // Setup
     setup();
 
@@ -11,5 +11,3 @@ fn main() {
     let mut vm = VM::new();
     vm.run();
 }
-
-

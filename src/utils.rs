@@ -1,6 +1,6 @@
 use std::env;
 
-pub fn load_arguments(){
+pub fn load_arguments() {
     let args: Vec<String> = env::args().collect();
 
     if args.len() < 2 {
@@ -26,7 +26,7 @@ fn read_image(filename: &str) -> bool {
     true
 }
 
-pub fn setup(){
+pub fn setup() {
     // C Code:
     //  signal(SIGINT, handle_interrupt);
     //  disable_input_buffering();

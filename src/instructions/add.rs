@@ -3,7 +3,7 @@ use crate::vm::VM;
 use super::sign_extend;
 
 impl VM {
-    pub fn op_add(&mut self, instr: u16){
+    pub fn op_add(&mut self, instr: u16) {
         // Destination Register (DR) number
         let r0: usize = ((instr >> 9) & 0x7).into();
 
@@ -28,7 +28,6 @@ impl VM {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use crate::vm::VM;
@@ -36,10 +35,10 @@ mod tests {
     #[test]
     fn test_op_add_register_mode() {
         let mut vm = VM::new();
-        
+
         // Set initial values in registers
-        vm.reg.general[1] = 5;   // SR1 (r1)
-        vm.reg.general[2] = 10;  // SR2 (r2)
+        vm.reg.general[1] = 5; // SR1 (r1)
+        vm.reg.general[2] = 10; // SR2 (r2)
 
         // Encoded instruction: ADD r0, r1, r2
         // Opcode: ADD (0001), DR: r0 (000), SR1: r1 (001), Mode: Register (0), SR2: r2 (010)
@@ -54,10 +53,10 @@ mod tests {
     #[test]
     fn op_add_zero() {
         let mut vm = VM::new();
-        
+
         // Set initial values in registers
-        vm.reg.general[1] = 10;  // SR1 (r1)
-        vm.reg.general[2] = 0;   // SR2 (r2)
+        vm.reg.general[1] = 10; // SR1 (r1)
+        vm.reg.general[2] = 0; // SR2 (r2)
 
         // Encoded instruction: ADD r0, r1, r2
         // Opcode: ADD (0001), DR: r0 (000), SR1: r1 (001), Mode: Register (0), SR2: r2 (010)
@@ -72,9 +71,9 @@ mod tests {
     #[test]
     fn test_op_add_immediate_mode_positive() {
         let mut vm = VM::new();
-        
+
         // Set initial values in registers
-        vm.reg.general[1] = 5;  // SR1 (r1)
+        vm.reg.general[1] = 5; // SR1 (r1)
 
         // Encoded instruction: ADD r0, r1, imm5
         // Opcode: ADD (0001), DR: r0 (000), SR1: r1 (001), Mode: Immediate (1), imm5: 2 (00010)
@@ -89,9 +88,9 @@ mod tests {
     #[test]
     fn op_add_immediate_mode_negative() {
         let mut vm = VM::new();
-        
+
         // Set initial values in registers
-        vm.reg.general[1] = 5;  // SR1 (r1)
+        vm.reg.general[1] = 5; // SR1 (r1)
 
         // Encoded instruction: ADD r0, r1, imm5
         // Opcode: ADD (0001), DR: r0 (000), SR1: r1 (001), Mode: Immediate (1), imm5: -1 (11111)
@@ -107,10 +106,10 @@ mod tests {
     fn op_add_immediate_mode_negative_change_sign() {
         let mut vm = VM::new();
 
-        vm.reg.general[0] = 3;  // SR1 (r1)
+        vm.reg.general[0] = 3; // SR1 (r1)
 
         // Opcode: ADD (0001), DR: r0 (000), SR1: r1 (000), Mode: Immediate (1), imm5: -14
-        let instr: u16 = 0b0001_000_000_1_10010; 
+        let instr: u16 = 0b0001_000_000_1_10010;
 
         vm.op_add(instr);
 

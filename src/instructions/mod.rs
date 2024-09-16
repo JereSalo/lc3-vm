@@ -15,7 +15,6 @@ pub mod sti;
 pub mod str;
 pub mod trap;
 
-
 fn sign_extend(mut x: u16, bit_count: u8) -> u16 {
     if (x >> (bit_count - 1)) & 1 != 0 {
         x |= 0xFFFF << bit_count;
