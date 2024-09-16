@@ -25,6 +25,8 @@ fn sign_extend(mut x: u16, bit_count: u8) -> u16 {
 
 #[cfg(test)]
 mod tests {
+    use std::result;
+
     use super::*;
 
     #[test]
@@ -58,6 +60,9 @@ mod tests {
         // Maximum value for 5 bits: 0b11111 (should extend to -1)
         let x: u16 = 0b11111;
         let result = sign_extend(x, 5);
+
+        println!("Result in binary: {:b}", result as i16);
+
         assert_eq!(result as i16, -1);
     }
 }
