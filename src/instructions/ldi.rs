@@ -32,7 +32,7 @@ mod tests {
     }
 
     #[test]
-    fn test_op_ldi_basic() {
+    fn op_ldi_basic() {
         let mut vm = setup_vm();
 
         // Set memory at the current PC + offset to point to another memory location
@@ -58,7 +58,7 @@ mod tests {
     }
 
     #[test]
-    fn test_op_ldi_negative_offset() {
+    fn op_ldi_negative_offset() {
         let mut vm = setup_vm();
 
         // Set memory at PC + offset to point to another memory location
@@ -83,7 +83,7 @@ mod tests {
     }
 
     #[test]
-    fn test_op_ldi_zero_address() {
+    fn op_ldi_zero_address() {
         let mut vm = setup_vm();
 
         // Set memory at PC + offset to point to address 0
@@ -107,7 +107,7 @@ mod tests {
     }
 
     #[test]
-    fn test_op_ldi_max_offset() {
+    fn op_ldi_max_offset() {
         let mut vm = setup_vm();
 
         // Use maximum positive 9-bit PC offset (511)
