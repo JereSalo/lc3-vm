@@ -32,7 +32,6 @@ impl VM {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use crate::vm::VM;
 
     #[test]
