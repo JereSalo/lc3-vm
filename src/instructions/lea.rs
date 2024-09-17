@@ -1,4 +1,4 @@
-use crate::vm::VM;
+use crate::vm::vm::VM;
 
 use super::sign_extend;
 
@@ -14,8 +14,7 @@ impl VM {
 
 #[cfg(test)]
 mod tests {
-    use crate::vm::VM;
-
+    use super::*;
 
     #[test]
     fn lea(){

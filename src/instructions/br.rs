@@ -1,4 +1,4 @@
-use crate::{condition_flag::ConditionFlag, vm::VM};
+use crate::vm::{vm::VM, condition_flag::ConditionFlag};
 
 use super::sign_extend;
 

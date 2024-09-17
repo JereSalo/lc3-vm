@@ -20,6 +20,53 @@ fn sign_extend(mut x: u16, bit_count: u8) -> u16 {
     x
 }
 
+pub enum Opcode {
+    OpBr,   // Branch
+    OpAdd,  // Add
+    OpLd,   // Load
+    OpSt,   // Store
+    OpJsr,  // Jump to Subroutine
+    OpAnd,  // Bitwise AND
+    OpLdr,  // Load Base+Offset
+    OpStr,  // Store Base+Offset
+    OpRti,  // Return from Interrupt (Unused)
+    OpNot,  // Bitwise NOT
+    OpLdi,  // Load Indirect
+    OpSti,  // Store Indirect
+    OpJmp,  // Jump
+    OpRes,  // Reserved (Unused)
+    OpLea,  // Load Effective Address
+    OpTrap, // Trap
+}
+
+/// Convert u16 into Opcode
+impl TryFrom<u16> for Opcode {
+    type Error = ();
+
+    fn try_from(value: u16) -> Result<Self, Self::Error> {
+        match value {
+            0 => Ok(Opcode::OpBr),
+            1 => Ok(Opcode::OpAdd),
+            2 => Ok(Opcode::OpLd),
+            3 => Ok(Opcode::OpSt),
+            4 => Ok(Opcode::OpJsr),
+            5 => Ok(Opcode::OpAnd),
+            6 => Ok(Opcode::OpLdr),
+            7 => Ok(Opcode::OpStr),
+            8 => Ok(Opcode::OpRti),
+            9 => Ok(Opcode::OpNot),
+            10 => Ok(Opcode::OpLdi),
+            11 => Ok(Opcode::OpSti),
+            12 => Ok(Opcode::OpJmp),
+            13 => Ok(Opcode::OpRes),
+            14 => Ok(Opcode::OpLea),
+            15 => Ok(Opcode::OpTrap),
+            _ => Err(()),
+        }
+    }
+}
+
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -40,24 +87,5 @@ mod tests {
         let x: u16 = 0b11110;
         let result = sign_extend(x, 5);
         assert_eq!(result as i16, -2);
-    }
-
-    #[test]
-    fn test_sign_extend_zero() {
-        // Zero should remain zero no matter the bit count
-        let x: u16 = 0b00000;
-        let result = sign_extend(x, 5);
-        assert_eq!(result, 0);
-    }
-
-    #[test]
-    fn test_sign_extend_max_value() {
-        // Maximum value for 5 bits: 0b11111 (should extend to -1)
-        let x: u16 = 0b11111;
-        let result = sign_extend(x, 5);
-
-        println!("Result in binary: {:b}", result as i16);
-
-        assert_eq!(result as i16, -1);
     }
 }

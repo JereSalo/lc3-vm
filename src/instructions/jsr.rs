@@ -1,4 +1,4 @@
-use crate::vm::VM;
+use crate::vm::vm::VM;
 
 use super::sign_extend;
 
