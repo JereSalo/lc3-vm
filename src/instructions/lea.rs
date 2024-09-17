@@ -7,7 +7,7 @@ impl VM {
         let dr: usize = ((instr >> 9) & 0b111).into();
         let pc_offset = sign_extend(instr & 0x1FF, 9);
 
-        let value = self.reg.pc + pc_offset;
+        let value = self.reg.pc.wrapping_add(pc_offset);
         self.reg.update(dr, value);
     }
 }

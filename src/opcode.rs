@@ -7,12 +7,12 @@ pub enum Opcode {
     OpAnd,  // 5
     OpLdr,  // 6
     OpStr,  // 7
-    OpRti,  // 8
+    OpRti,  // 8: Unused
     OpNot,  // 9
     OpLdi,  // 10
     OpSti,  // 11
     OpJmp,  // 12
-    OpRes,  // 13
+    OpRes,  // 13: Reserved (Unused)
     OpLea,  // 14
     OpTrap, // 15
 }

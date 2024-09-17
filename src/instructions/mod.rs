@@ -8,8 +8,6 @@ pub mod ldi;
 pub mod ldr;
 pub mod lea;
 pub mod not;
-pub mod res;
-pub mod rti;
 pub mod st;
 pub mod sti;
 pub mod str;
@@ -24,8 +22,6 @@ fn sign_extend(mut x: u16, bit_count: u8) -> u16 {
 
 #[cfg(test)]
 mod tests {
-    use std::result;
-
     use super::*;
 
     #[test]
