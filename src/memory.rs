@@ -20,4 +20,8 @@ impl Memory {
     pub fn read(&self, position: usize) -> u16 {
         self.memory[position]
     }
+
+    pub fn write(&mut self, position: usize, value: u16) {
+        self.memory[position] = value;
+    }
 }

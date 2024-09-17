@@ -14,7 +14,7 @@ impl VM {
         }
         else {
             let pc_offset = instr & 0b11111111111; // Because it is the last 11 bits
-            self.reg.pc += sign_extend(pc_offset, 11);
+            self.reg.pc = self.reg.pc.wrapping_add(sign_extend(pc_offset, 11));
         }
     }
 }

@@ -14,7 +14,7 @@ impl VM {
         
         // This could be more pretty
         if n && self.reg.cond == ConditionFlag::Neg || z && self.reg.cond == ConditionFlag::Zro || p && self.reg.cond ==ConditionFlag::Pos {
-            self.reg.pc += sign_extend(pc_offset, 9);
+            self.reg.pc = self.reg.pc.wrapping_add(sign_extend(pc_offset, 9));
         }
     }
 }
