@@ -26,7 +26,7 @@ fn read_image(filename: &str) -> bool {
     true
 }
 
-pub fn setup() {
+pub fn set_up() {
     // C Code:
     //  signal(SIGINT, handle_interrupt);
     //  disable_input_buffering();

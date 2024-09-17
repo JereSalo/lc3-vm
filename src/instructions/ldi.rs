@@ -23,8 +23,8 @@ impl VM {
 mod tests {
     use crate::vm::VM;
 
-    // Helper function to setup a VM instance for testing
-    fn setup_vm() -> VM {
+    // Helper function to set up a VM instance for testing
+    fn set_up_vm() -> VM {
         let mut vm = VM::new(); // Initialize VM with a `new` constructor
 
         vm.reg.pc = 0x3000; // Set program counter to an arbitrary starting value
@@ -33,7 +33,7 @@ mod tests {
 
     #[test]
     fn op_ldi_basic() {
-        let mut vm = setup_vm();
+        let mut vm = set_up_vm();
 
         // Set memory at the current PC + offset to point to another memory location
         let pc_offset = 10;
@@ -59,7 +59,7 @@ mod tests {
 
     #[test]
     fn op_ldi_negative_offset() {
-        let mut vm = setup_vm();
+        let mut vm = set_up_vm();
 
         // Set memory at PC + offset to point to another memory location
         let pc_offset = -5i16 as u16; // Use a negative offset (in two's complement)
@@ -84,7 +84,7 @@ mod tests {
 
     #[test]
     fn op_ldi_zero_address() {
-        let mut vm = setup_vm();
+        let mut vm = set_up_vm();
 
         // Set memory at PC + offset to point to address 0
         let pc_offset = 0;
@@ -108,7 +108,7 @@ mod tests {
 
     #[test]
     fn op_ldi_max_offset() {
-        let mut vm = setup_vm();
+        let mut vm = set_up_vm();
 
         // Use maximum positive 9-bit PC offset (511)
         let pc_offset = 255;
