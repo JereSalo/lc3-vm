@@ -1,10 +1,16 @@
-use crate::{memory::Memory, registers::Registers, opcode::Opcode};
+use crate::{instructions, memory::Memory, opcode::Opcode, registers::Registers};
 
 const PC_START: u16 = 0x3000;
 
 pub struct VM {
-    reg: Registers,
-    mem: Memory,
+    pub reg: Registers,
+    pub mem: Memory,
+}
+
+impl Default for VM {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl VM {
@@ -29,33 +35,35 @@ impl VM {
             // Decode opcode
             let raw_opcode = instruction >> 12;
             match Opcode::try_from(raw_opcode) {
-                Ok(opcode) => self.execute_instruction(opcode),
+                Ok(opcode) => self.execute_instruction(opcode, instruction),
                 Err(_) => {
                     eprintln!("Unknown opcode: {:#X}", raw_opcode);
                     break;
                 }
             }
         }
+
+        // Shutdown goes here.
     }
 
-    fn execute_instruction(&mut self, opcode: Opcode) {
+    fn execute_instruction(&mut self, opcode: Opcode, instr: u16) {
         match opcode {
-            Opcode::OpAdd => self.op_add(),
-            Opcode::OpAnd => self.op_and(),
-            Opcode::OpNot => self.op_not(),
-            Opcode::OpBr => self.op_br(),
-            Opcode::OpJmp => self.op_jmp(),
-            Opcode::OpJsr => self.op_jsr(),
-            Opcode::OpLd => self.op_ld(),
-            Opcode::OpLdi => self.op_ldi(),
-            Opcode::OpLdr => self.op_ldr(),
-            Opcode::OpLea => self.op_lea(),
-            Opcode::OpSt => self.op_st(),
-            Opcode::OpSti => self.op_sti(),
-            Opcode::OpStr => self.op_str(),
-            Opcode::OpTrap => self.op_trap(),
-            Opcode::OpRes => self.op_res(),
-            Opcode::OpRti => self.op_rti(),
+            Opcode::OpAdd => self.op_add(instr),
+            Opcode::OpAnd => self.op_and(instr),
+            Opcode::OpNot => self.op_not(instr),
+            Opcode::OpBr => self.op_br(instr),
+            Opcode::OpJmp => self.op_jmp(instr),
+            Opcode::OpJsr => self.op_jsr(instr),
+            Opcode::OpLd => self.op_ld(instr),
+            Opcode::OpLdi => self.op_ldi(instr),
+            Opcode::OpLdr => self.op_ldr(instr),
+            Opcode::OpLea => self.op_lea(instr),
+            Opcode::OpSt => self.op_st(instr),
+            Opcode::OpSti => self.op_sti(instr),
+            Opcode::OpStr => self.op_str(instr),
+            Opcode::OpTrap => self.op_trap(instr),
+            Opcode::OpRes => self.op_res(instr),
+            Opcode::OpRti => self.op_rti(instr),
         }
     }
 }

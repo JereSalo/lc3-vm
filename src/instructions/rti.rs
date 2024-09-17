@@ -1,7 +1,5 @@
 use crate::vm::VM;
 
 impl VM {
-    pub fn op_rti(&self){
-        
-    }
+    pub fn op_rti(&mut self, instr: u16) {}
 }
