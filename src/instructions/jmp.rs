@@ -13,7 +13,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn jump(){
+    fn jump() {
         let mut vm = VM::new();
         vm.reg.pc = 0x3000;
         let r = 3;
@@ -26,5 +26,4 @@ mod tests {
 
         assert_eq!(vm.reg.pc, expected_pc);
     }
-
 }

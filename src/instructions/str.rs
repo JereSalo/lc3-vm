@@ -19,7 +19,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn str(){
+    fn str() {
         let mut vm = VM::new();
         let expected_value = 50;
         vm.reg.update(0, expected_value);

@@ -17,11 +17,11 @@ mod tests {
     use super::*;
 
     #[test]
-    fn lea(){
+    fn lea() {
         let mut vm = VM::new();
         vm.reg.pc = 0x3000;
         let expected_address = 0x3000 + 10;
-        
+
         let instr = 0b1110_001_000001010; // Load Effective Address to register 1 with pc_offset 10
 
         vm.op_lea(instr);

@@ -1,5 +1,5 @@
-use lc3_vm::utils::*;
 use lc3_vm::hardware::vm::VM;
+use lc3_vm::utils::*;
 fn main() {
     // Load Arguments
     load_arguments();

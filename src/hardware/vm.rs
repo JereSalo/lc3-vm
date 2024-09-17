@@ -63,8 +63,8 @@ impl VM {
             Opcode::OpSti => self.op_sti(instr),
             Opcode::OpStr => self.op_str(instr),
             Opcode::OpTrap => self.op_trap(instr),
-            Opcode::OpRes => {},
-            Opcode::OpRti => {},
+            Opcode::OpRes => {}
+            Opcode::OpRti => {}
             // The last 2 are unused opcodes, I have to define what to do when they are called.
         }
     }

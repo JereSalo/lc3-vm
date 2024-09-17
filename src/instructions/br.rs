@@ -44,8 +44,6 @@ mod tests {
         let instr = 0b0000_001_000001010; // BRp with offset 10
         vm.op_br(instr);
 
-        
-
         assert_eq!(expected_pc, vm.reg.pc);
     }
 }

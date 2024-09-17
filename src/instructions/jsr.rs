@@ -11,8 +11,7 @@ impl VM {
         if mode == 0 {
             let br: usize = ((instr >> 6) & 0b111).into();
             self.reg.pc = self.reg.general[br];
-        }
-        else {
+        } else {
             let pc_offset = instr & 0b11111111111; // Because it is the last 11 bits
             self.reg.pc = self.reg.pc.wrapping_add(sign_extend(pc_offset, 11));
         }
@@ -24,7 +23,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn jsr(){
+    fn jsr() {
         let mut vm = VM::new();
         vm.reg.pc = 0x3000;
         let expected_pc = vm.reg.pc + 127;
@@ -37,7 +36,7 @@ mod tests {
     }
 
     #[test]
-    fn jsrr(){
+    fn jsrr() {
         let mut vm = VM::new();
         vm.reg.pc = 0x3000;
         let expected_pc = vm.reg.pc + 127;

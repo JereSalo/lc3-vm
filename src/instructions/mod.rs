@@ -66,7 +66,6 @@ impl TryFrom<u16> for Opcode {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;

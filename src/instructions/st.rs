@@ -9,11 +9,10 @@ impl VM {
 
         let destination_address = (self.reg.pc.wrapping_add(pc_offset)).into();
         let value = self.reg.general[sr];
-        
+
         self.mem.write(destination_address, value);
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -21,7 +20,6 @@ mod tests {
 
     #[test]
     fn st() {
-
         let mut vm = VM::new();
         let expected_value = 50;
         vm.reg.update(1, expected_value);

@@ -25,7 +25,6 @@ mod tests {
         let written_value = 99;
         vm.mem.write(0x300A, written_value);
         vm.reg.update(1, 0x3000);
-        
 
         let instr = 0b0110_000_001_001010; // LDR to register 0 from register 1's address with offset 10.
         vm.op_ldr(instr);
