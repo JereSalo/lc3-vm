@@ -1,4 +1,4 @@
-use crate::vm::condition_flag::ConditionFlag;
+use crate::hardware::condition_flag::ConditionFlag;
 
 pub struct Registers {
     pub general: [u16; 8], // General purpose registers
@@ -22,7 +22,7 @@ impl Registers {
     }
 
     pub fn update(&mut self, r: usize, value: u16) {
-        self.general[r] = value; // This could panic if I mess it up :)
+        self.general[r] = value;
         self.update_flags(r);
     }
 

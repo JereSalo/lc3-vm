@@ -1,4 +1,4 @@
-use crate::vm::{memory::Memory, registers::Registers};
+use crate::hardware::{memory::Memory, registers::Registers};
 use crate::instructions::*;
 
 const PC_START: u16 = 0x3000;

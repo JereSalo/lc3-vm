@@ -1,10 +1,10 @@
-use crate::vm::vm::VM;
+use crate::hardware::vm::VM;
 
 use super::sign_extend;
 
 impl VM {
     pub fn op_br(&mut self, instr: u16) {
-        let nzp = ((instr >> 9) & 0b111);
+        let nzp = (instr >> 9) & 0b111;
         let pc_offset = instr & 0x1FF;
 
         if nzp & self.reg.cond as u16 > 0 {
@@ -16,7 +16,7 @@ impl VM {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::vm::condition_flag::ConditionFlag;
+    use crate::hardware::condition_flag::ConditionFlag;
 
     #[test]
     fn test_op_br_pos_true() {

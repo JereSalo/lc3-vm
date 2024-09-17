@@ -1,4 +1,4 @@
-use crate::vm::vm::VM;
+use crate::hardware::vm::VM;
 
 impl VM {
     pub fn op_not(&mut self, instr: u16) {
