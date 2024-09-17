@@ -1,19 +1,13 @@
-use crate::vm::{vm::VM, condition_flag::ConditionFlag};
+use crate::vm::vm::VM;
 
 use super::sign_extend;
 
 impl VM {
     pub fn op_br(&mut self, instr: u16) {
-        // It is a conditional jump based on flags N Z and P.
-        let n = ((instr >> 11) & 0x1) == 1;
-        let z = ((instr >> 10) & 0x1) == 1;
-        let p = ((instr >> 9) & 0x1) == 1;
-
+        let nzp = ((instr >> 9) & 0b111);
         let pc_offset = instr & 0x1FF;
 
-        
-        // This could be more pretty
-        if n && self.reg.cond == ConditionFlag::Neg || z && self.reg.cond == ConditionFlag::Zro || p && self.reg.cond ==ConditionFlag::Pos {
+        if nzp & self.reg.cond as u16 > 0 {
             self.reg.pc = self.reg.pc.wrapping_add(sign_extend(pc_offset, 9));
         }
     }
@@ -22,6 +16,7 @@ impl VM {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::vm::condition_flag::ConditionFlag;
 
     #[test]
     fn test_op_br_pos_true() {
