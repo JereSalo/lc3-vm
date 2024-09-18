@@ -1,9 +1,8 @@
-use crate::hardware::{memory::Memory, registers::Registers};
+use crate::hardware::{memory::Memory, registers::*};
 use crate::instructions::*;
-use std::{env, fs::File, io::{BufReader, Read}};
+use std::{env, fs::File, io::BufReader};
 use byteorder::{BigEndian, ReadBytesExt};
 
-const PC_START: u16 = 0x3000;
 
 pub struct VM {
     pub reg: Registers,
@@ -30,7 +29,7 @@ impl VM {
         let args: Vec<String> = env::args().collect();
     
         if args.len() < 2 {
-            eprintln!("lc3 [image-file1] ...");
+            eprintln!("cargo run [image-file1] ...");
             return;
         }
     

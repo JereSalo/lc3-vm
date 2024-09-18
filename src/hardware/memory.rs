@@ -1,10 +1,16 @@
 use std::io::Read;
 
 const MEMORY_MAX: usize = 1 << 16;
-const MR_KBSR: usize = 0xFE00;
-const MR_KBDR: usize = 0xFE02;
+
 pub struct Memory {
     pub memory: [u16; MEMORY_MAX],
+}
+
+enum MemoryMappedRegister {
+    /// Keyboard Status
+    MrKbsr = 0xFE00,
+    /// Keyboard Data
+    MrKbdr = 0xFE02
 }
 
 impl Default for Memory {
@@ -21,7 +27,7 @@ impl Memory {
     }
 
     pub fn read(&mut self, address: usize) -> u16 {
-        if address == MR_KBSR {
+        if address == MemoryMappedRegister::MrKbsr as usize {
             self.handle_keyboard();
         }
 
@@ -32,10 +38,10 @@ impl Memory {
         let mut buffer = [0; 1];
         std::io::stdin().read_exact(&mut buffer).unwrap();
         if buffer[0] != 0 {
-            self.write(MR_KBSR, 1 << 15);
-            self.write(MR_KBDR, buffer[0] as u16);
+            self.write(MemoryMappedRegister::MrKbsr as usize, 1 << 15);
+            self.write(MemoryMappedRegister::MrKbdr as usize, buffer[0] as u16);
         } else {
-            self.write(MR_KBSR, 0)
+            self.write(MemoryMappedRegister::MrKbsr as usize, 0)
         }
     }
 

@@ -1,5 +1,6 @@
 use crate::hardware::condition_flag::ConditionFlag;
 
+pub const PC_START: u16 = 0x3000;
 pub struct Registers {
     pub general: [u16; 8], // General purpose registers
     pub pc: u16,           // Program Counter
@@ -16,7 +17,7 @@ impl Registers {
     pub fn new() -> Self {
         Registers {
             general: [0; 8],
-            pc: 0,
+            pc: 0x3000,
             cond: ConditionFlag::Zro,
         }
     }
