@@ -76,11 +76,50 @@ fn trap_puts(vm: &mut VM) {
 }
 
 fn trap_in(vm: &mut VM) {
-    // Implementation of trap_in
+    // Print the prompt
+    print!("Enter a character: ");
+    io::stdout().flush().unwrap(); // Ensure the prompt is printed immediately
+
+    // Read a single character from stdin
+    let mut buffer = [0u8; 1]; // Buffer to hold the single byte input
+    io::stdin().read_exact(&mut buffer).unwrap();
+
+    // Echo the character to the console
+    let ch = buffer[0] as char;
+    print!("{}", ch);
+    io::stdout().flush().unwrap(); // Flush the output to ensure the character is printed
+
+    // Store the ASCII value of the character in R0, clearing the high 8 bits
+    vm.reg.update(0, buffer[0] as u16);
 }
 
 fn trap_putsp(vm: &mut VM) {
-    // Implementation of trap_putsp
+    let mut address = vm.reg.general[0] as usize; // Starting address from R0
+
+    // Loop through memory until a word containing 0x0000 is found
+    loop {
+        let word = vm.mem.read(address); // Read the 16-bit word from memory
+
+        if word == 0 {
+            break; // Stop when we hit 0x0000 (null terminator)
+        }
+
+        // Extract the lower 8 bits (first character)
+        let char1 = (word & 0xFF) as u8 as char;
+        print!("{}", char1); // Print the first character
+
+        // Extract the upper 8 bits (second character)
+        let char2 = (word >> 8) as u8 as char;
+        if char2 != '\0' { // If the second character isn't null, print it
+            print!("{}", char2);
+        }
+
+        // Move to the next memory word
+        address += 1;
+    }
+
+    // Flush the output to make sure it's displayed immediately
+    std::io::stdout().flush().unwrap();
 }
 
 fn trap_halt(vm: &mut VM) {
