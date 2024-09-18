@@ -3,6 +3,8 @@ use crate::hardware::vm::VM;
 use super::sign_extend;
 
 impl VM {
+    /// Load Effective Address
+    /// Loads the effective address (not the value) into a register.
     pub fn op_lea(&mut self, instr: u16) {
         let dr: usize = ((instr >> 9) & 0b111).into();
         let pc_offset = sign_extend(instr & 0x1FF, 9);
@@ -14,7 +16,7 @@ impl VM {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::VM;
 
     #[test]
     fn lea() {

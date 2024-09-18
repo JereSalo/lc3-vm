@@ -3,6 +3,8 @@ use crate::hardware::vm::VM;
 use super::sign_extend;
 
 impl VM {
+    /// Load Indirect
+    /// Loads a value indirectly from memory into a register.
     pub fn op_ldi(&mut self, instr: u16) {
         // Destination Register
         let r0: usize = ((instr >> 9) & 0x7).into();
@@ -22,7 +24,7 @@ impl VM {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::VM;
 
     // Helper function to set up a VM instance for testing
     fn set_up_vm() -> VM {

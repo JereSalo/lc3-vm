@@ -3,6 +3,7 @@ use crate::hardware::vm::VM;
 use super::sign_extend;
 
 impl VM {
+    /// Load
     /// Gets a destination register and a pc_offset, and writes into that register the value in memory location PC + Offset.
     pub fn op_ld(&mut self, instr: u16) {
         let dr: usize = ((instr >> 9) & 0b111).into(); // Destination register.
@@ -16,7 +17,7 @@ impl VM {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::VM;
 
     #[test]
     fn ld() {
