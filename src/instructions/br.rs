@@ -7,10 +7,11 @@ impl VM {
     /// Conditional branch based on the condition flags.
     pub fn op_br(&mut self, instr: u16) {
         // nzp: Negative - Zero - Positive. 
-        let nzp = (instr >> 9) & 0b111;
+        let nzp_flags = (instr >> 9) & 0b111;
         let pc_offset = instr & 0x1FF;
 
-        if nzp & self.reg.cond as u16 > 0 {
+        // True if the last operation's flag matches with one of the three flags.
+        if nzp_flags & self.reg.cond as u16 > 0 {
             self.reg.pc = self.reg.pc.wrapping_add(sign_extend(pc_offset, 9));
         }
     }
