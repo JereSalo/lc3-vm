@@ -3,7 +3,10 @@ use crate::hardware::vm::VM;
 use super::sign_extend;
 
 impl VM {
+    /// Branch
+    /// Conditional branch based on the condition flags.
     pub fn op_br(&mut self, instr: u16) {
+        // nzp: Negative - Zero - Positive. 
         let nzp = (instr >> 9) & 0b111;
         let pc_offset = instr & 0x1FF;
 

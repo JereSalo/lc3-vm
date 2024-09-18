@@ -3,6 +3,8 @@ use crate::hardware::vm::VM;
 use super::sign_extend;
 
 impl VM {
+    /// Jump to Subroutine
+    /// Saves the current PC and jumps to a subroutine.
     pub fn op_jsr(&mut self, instr: u16) {
         let mode = (instr >> 11) & 1;
 

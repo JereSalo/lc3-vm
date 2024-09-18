@@ -3,6 +3,8 @@ use crate::hardware::vm::VM;
 use super::sign_extend;
 
 impl VM {
+    /// Store Indirect
+    /// Stores a register value indirectly into memory.
     pub fn op_sti(&mut self, instr: u16) {
         let sr: usize = ((instr >> 9) & 0b111).into();
         let pc_offset = sign_extend(instr & 0x1FF, 9);

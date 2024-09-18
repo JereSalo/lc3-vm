@@ -3,6 +3,8 @@ use crate::hardware::vm::VM;
 use super::sign_extend;
 
 impl VM {
+    /// Bitwise AND
+    /// Performs bitwise AND between two values and stores the result in a register.
     pub fn op_and(&mut self, instr: u16) {
         // Destination Register (DR) number
         let r0: usize = ((instr >> 9) & 0x7).into();

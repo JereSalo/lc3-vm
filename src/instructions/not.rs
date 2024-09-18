@@ -1,6 +1,8 @@
 use crate::hardware::vm::VM;
 
 impl VM {
+    /// Bitwise NOT
+    /// Performs a bitwise NOT (complement) on a value and stores the result in a register.
     pub fn op_not(&mut self, instr: u16) {
         // Destination Register (DR) number
         let r0: usize = ((instr >> 9) & 0x7).into();

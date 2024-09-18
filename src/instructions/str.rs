@@ -3,6 +3,8 @@ use crate::hardware::vm::VM;
 use super::sign_extend;
 
 impl VM {
+    /// Store Base + Offset
+    /// Stores a register value into memory using a base register and an offset.
     pub fn op_str(&mut self, instr: u16) {
         let sr: usize = ((instr >> 9) & 0b111).into();
         let br: usize = ((instr >> 6) & 0b111).into();
