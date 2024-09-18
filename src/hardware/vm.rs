@@ -24,12 +24,6 @@ impl VM {
         }
     }
 
-    pub fn read_image_file() {
-        // First 16 bits specify where should program start. The Origin
-
-        // The rest of the program is read into memory starting from the origin address.
-    }
-
     pub fn run(&mut self) {
         self.reg.pc = PC_START;
         while self.running {

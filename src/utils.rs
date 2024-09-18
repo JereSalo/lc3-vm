@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, fs::File};
 
 use crate::hardware::vm::VM;
 
@@ -13,7 +13,7 @@ impl VM {
     
         // Iterate over each argument (skipping the first one which is the program name)
         for arg in &args[1..] {
-            if !self.read_image(arg) {
+            if !self.read_image_file(arg) {
                 // Show error message and exit with status code 1
                 eprintln!("failed to load image: {}", arg);
                 return;
@@ -21,7 +21,10 @@ impl VM {
         }
     }
 
-    pub fn read_image(&self, filename: &str) -> bool {
+    fn read_image_file(&self, filename: &str) -> bool {
+        let file = File::open(filename).expect("Error opening file");
+
+        
 
     }
 }
