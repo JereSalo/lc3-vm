@@ -20,13 +20,12 @@ impl VM {
         VM {
             reg: Registers::new(),
             mem: Memory::new(),
-            running: false,
+            running: true,
         }
     }
 
     pub fn run(&mut self) {
         self.reg.pc = PC_START;
-        self.running = true;
         while self.running {
             // Fetch instruction from memory
             let instruction_address: usize = self.reg.pc.into();
