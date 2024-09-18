@@ -29,7 +29,7 @@ fn trap_getc(vm: &mut VM) {
     // Save current terminal settings
     let stdin_fd = 0; // File descriptor for stdin
     let termios = Termios::from_fd(stdin_fd).unwrap();
-    let mut termios_raw = termios.clone();
+    let mut termios_raw = termios;
 
     // Disable echo and canonical mode
     termios_raw.c_lflag &= !(ECHO | ICANON);

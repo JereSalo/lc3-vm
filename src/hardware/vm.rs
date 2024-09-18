@@ -55,11 +55,10 @@ impl VM {
                 Ok(opcode) => self.execute_instruction(opcode, instruction),
                 Err(_) => {
                     eprintln!("Unknown opcode: {:#X}", raw_opcode);
-                    break;
+                    break; // It should finish execution if there's a bad opcode.
                 }
             }
         }
-        // Shutdown goes here.
     }
     
     fn execute_instruction(&mut self, opcode: Opcode, instr: u16) {
