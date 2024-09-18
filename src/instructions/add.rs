@@ -30,7 +30,7 @@ impl VM {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::VM;
 
     #[test]
     fn test_op_add_register_mode() {

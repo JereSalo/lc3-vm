@@ -30,7 +30,7 @@ impl VM {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::VM;
 
     #[test]
     fn op_and_two_registers() {

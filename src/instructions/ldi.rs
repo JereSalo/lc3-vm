@@ -21,7 +21,7 @@ impl VM {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::VM;
 
     // Helper function to set up a VM instance for testing
     fn set_up_vm() -> VM {

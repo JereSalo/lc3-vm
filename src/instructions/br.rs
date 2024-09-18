@@ -15,7 +15,7 @@ impl VM {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::VM;
     use crate::hardware::condition_flag::ConditionFlag;
 
     #[test]
