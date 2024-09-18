@@ -18,6 +18,10 @@ pub fn load_arguments() {
     }
 }
 
+fn swap16(x: u16) -> u16 {
+    (x << 8) | (x >> 8)
+}
+
 fn read_image(filename: &str) -> bool {
     // Open file, read, close file. To be Implemented.
 
