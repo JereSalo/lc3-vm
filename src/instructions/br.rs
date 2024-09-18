@@ -20,7 +20,7 @@ impl VM {
 #[cfg(test)]
 mod tests {
     use super::VM;
-    use crate::hardware::condition_flag::ConditionFlag;
+    use crate::hardware::registers::ConditionFlag;
 
     #[test]
     fn test_op_br_pos_true() {
