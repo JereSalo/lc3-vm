@@ -1,5 +1,8 @@
-const MEMORY_MAX: usize = 1 << 16;
+use std::io::Read;
 
+const MEMORY_MAX: usize = 1 << 16;
+const MR_KBSR: usize = 0xFE00;
+const MR_KBDR: usize = 0xFE02;
 pub struct Memory {
     pub memory: [u16; MEMORY_MAX],
 }
@@ -17,8 +20,23 @@ impl Memory {
         }
     }
 
-    pub fn read(&self, address: usize) -> u16 {
+    pub fn read(&mut self, address: usize) -> u16 {
+        if address == MR_KBSR {
+            self.handle_keyboard();
+        }
+
         self.memory[address]
+    }
+
+    fn handle_keyboard(&mut self){
+        let mut buffer = [0; 1];
+        std::io::stdin().read_exact(&mut buffer).unwrap();
+        if buffer[0] != 0 {
+            self.write(MR_KBSR, 1 << 15);
+            self.write(MR_KBDR, buffer[0] as u16);
+        } else {
+            self.write(MR_KBSR, 0)
+        }
     }
 
     pub fn write(&mut self, address: usize, value: u16) {

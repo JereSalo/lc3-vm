@@ -13,7 +13,8 @@ impl VM {
         // Use of wrapping_add for handling overflow cases (that happen when adding to a sign-extended negative number)
         let position: usize = self.reg.pc.wrapping_add(pc_offset).into();
 
-        let value = self.mem.read(self.mem.read(position).into());
+        let temp_value = self.mem.read(position).into();
+        let value = self.mem.read(temp_value);
 
         self.reg.update(r0, value);
     }
