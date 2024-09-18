@@ -1,3 +1,5 @@
+use std::io::Write;
+
 use crate::hardware::vm::VM;
 
 impl VM {
@@ -27,9 +29,27 @@ fn trap_out(vm: &mut VM) {
 }
 
 fn trap_puts(vm: &mut VM) {
-    // Implementation of trap_puts
-    // Write to stdout characters until I reach 0x0000 and flush the output buffer.
-    
+    let mut address = vm.reg.general[0] as usize; // Starting address from R0
+
+    // Loop over the memory starting from the address in R0 until we hit a zero (null terminator)
+    loop {
+        let value = vm.mem.read(address);
+
+        // Break the loop if we encounter a null terminator (0)
+        if value == 0 {
+            break;
+        }
+
+        // Convert the u16 memory value to a char and print it
+        let ch = value as u8 as char;
+        print!("{}", ch); // Print each character to stdout
+
+        // Move to the next memory word
+        address += 1;
+    }
+
+    // Flush stdout to ensure all output is printed
+    std::io::stdout().flush().unwrap();
 }
 
 fn trap_in(vm: &mut VM) {
