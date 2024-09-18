@@ -1,4 +1,4 @@
-use crate::condition_flag::ConditionFlag;
+use crate::hardware::condition_flag::ConditionFlag;
 
 pub struct Registers {
     pub general: [u16; 8], // General purpose registers

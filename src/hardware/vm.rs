@@ -1,4 +1,5 @@
-use crate::{instructions, memory::Memory, opcode::Opcode, registers::Registers};
+use crate::hardware::{memory::Memory, registers::Registers};
+use crate::instructions::*;
 
 const PC_START: u16 = 0x3000;
 
@@ -62,8 +63,9 @@ impl VM {
             Opcode::OpSti => self.op_sti(instr),
             Opcode::OpStr => self.op_str(instr),
             Opcode::OpTrap => self.op_trap(instr),
-            Opcode::OpRes => self.op_res(instr),
-            Opcode::OpRti => self.op_rti(instr),
+            Opcode::OpRes => {}
+            Opcode::OpRti => {}
+            // The last 2 are unused opcodes, I have to define what to do when they are called.
         }
     }
 }

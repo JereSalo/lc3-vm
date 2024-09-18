@@ -1,8 +1,10 @@
-use crate::vm::VM;
+use crate::hardware::vm::VM;
 
 use super::sign_extend;
 
 impl VM {
+    /// Addition
+    /// Adds two numbers and stores the result in a register.
     pub fn op_add(&mut self, instr: u16) {
         // Destination Register (DR) number
         let r0: usize = ((instr >> 9) & 0x7).into();
@@ -30,7 +32,7 @@ impl VM {
 
 #[cfg(test)]
 mod tests {
-    use crate::vm::VM;
+    use super::VM;
 
     #[test]
     fn test_op_add_register_mode() {
