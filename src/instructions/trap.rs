@@ -123,11 +123,6 @@ fn trap_putsp(vm: &mut VM) {
 }
 
 fn trap_halt(vm: &mut VM) {
-    // Implementation of trap_halt
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    // Add tests here
+    println!("HALT");
+    vm.running = false; // This will stop execution
 }

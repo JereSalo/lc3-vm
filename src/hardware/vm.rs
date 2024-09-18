@@ -6,6 +6,7 @@ const PC_START: u16 = 0x3000;
 pub struct VM {
     pub reg: Registers,
     pub mem: Memory,
+    pub running: bool,
 }
 
 impl Default for VM {
@@ -19,13 +20,14 @@ impl VM {
         VM {
             reg: Registers::new(),
             mem: Memory::new(),
+            running: false,
         }
     }
 
     pub fn run(&mut self) {
         self.reg.pc = PC_START;
-
-        loop {
+        self.running = true;
+        while self.running {
             // Fetch instruction from memory
             let instruction_address: usize = self.reg.pc.into();
             let instruction = self.mem.read(instruction_address);
@@ -43,7 +45,6 @@ impl VM {
                 }
             }
         }
-
         // Shutdown goes here.
     }
 
