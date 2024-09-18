@@ -1,4 +1,6 @@
-use std::{env, fs::File};
+use std::{env, fs::File, io::{BufReader, Read}};
+
+use byteorder::{BigEndian, ReadBytesExt};
 
 use crate::hardware::vm::VM;
 
@@ -13,25 +15,22 @@ impl VM {
     
         // Iterate over each argument (skipping the first one which is the program name)
         for arg in &args[1..] {
-            if !self.read_image_file(arg) {
-                // Show error message and exit with status code 1
-                eprintln!("failed to load image: {}", arg);
-                return;
-            }
+            self.read_image_file(arg);
         }
     }
 
-    fn read_image_file(&self, filename: &str) -> bool {
-        let file = File::open(filename).expect("Error opening file");
+    pub fn read_image_file(&mut self, file_path: &str) {
+        let file = File::open(file_path).unwrap();
+        let mut reader = BufReader::new(file);
 
-        
-
+        let mut address = reader
+            .read_u16::<BigEndian>()
+            .unwrap();
+        while let Ok(instr) = reader.read_u16::<BigEndian>() {
+            self.mem.write(address as usize, instr);
+            address += 1;
+        }
     }
-}
-
-
-fn swap16(x: u16) -> u16 {
-    (x << 8) | (x >> 8)
 }
 
 pub fn set_up() {

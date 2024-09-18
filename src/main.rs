@@ -4,7 +4,7 @@ fn main() {
     let mut vm = VM::new();
 
     // Load Arguments
-    load_arguments(&mut vm);
+    vm.load_arguments();
 
     // Set up
     set_up();
