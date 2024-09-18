@@ -20,12 +20,35 @@ impl VM {
     }
 }
 
+use std::io::{self, Read};
+use termios::{Termios, TCSANOW, tcsetattr, ECHO, ICANON};
+
 fn trap_getc(vm: &mut VM) {
-    // Implementation of trap_getc
+    // Save current terminal settings
+    let stdin_fd = 0; // File descriptor for stdin
+    let termios = Termios::from_fd(stdin_fd).unwrap();
+    let mut termios_raw = termios.clone();
+
+    // Disable echo and canonical mode
+    termios_raw.c_lflag &= !(ECHO | ICANON);
+    tcsetattr(stdin_fd, TCSANOW, &termios_raw).unwrap();
+
+    // Read a single byte (char)
+    let mut buffer = [0u8; 1];
+    io::stdin().read_exact(&mut buffer).unwrap();
+
+    // Store the read character in R0 (converted to u16)
+    vm.reg.update(0, buffer[0] as u16); 
+
+    // Restore the original terminal settings
+    tcsetattr(stdin_fd, TCSANOW, &termios).unwrap();
 }
 
 fn trap_out(vm: &mut VM) {
-    // Implementation of trap_out
+    // Extract the lower 8 bits (R0[7:0]) from the R0 register
+    let ch = (vm.reg.general[0] & 0xFF) as u8 as char;
+    print!("{}", ch);
+    std::io::stdout().flush().unwrap();
 }
 
 fn trap_puts(vm: &mut VM) {
