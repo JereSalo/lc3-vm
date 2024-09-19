@@ -5,12 +5,13 @@ impl VM {
     /// Performs a bitwise NOT (complement) on a value and stores the result in a register.
     pub fn op_not(&mut self, instr: u16) {
         // Destination Register (DR) number
-        let r0 = (instr >> 9) & 0x7;
+        let dr = (instr >> 9) & 0x7;
 
         // Source Register
-        let r1 = (instr >> 6) & 0x7;
+        let sr = (instr >> 6) & 0x7;
 
-        self.reg.update(r0, !self.reg.get(r1));
+        // '!' is the Bitwise NOT operator for unsigned integers.
+        self.reg.update(dr, !self.reg.get(sr));
     }
 }
 

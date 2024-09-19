@@ -4,15 +4,16 @@ use super::sign_extend;
 
 impl VM {
     /// ## Load Base + Offset
-    /// Loads a value from memory using a base register and an offset into a register.
+    /// Loads a value from memory into a register using a base register and an offset.
     pub fn op_ldr(&mut self, instr: u16) {
         let dr = (instr >> 9) & 0b111; // Destination register.
         let br = (instr >> 6) & 0b111; // Base register
-        let pc_offset = sign_extend(instr & 0b111111, 6);
+        let br_offset = sign_extend(instr & 0b111111, 6); // Offset from Base Register
 
-        let final_address = self.reg.get(br).wrapping_add(pc_offset);
-        let value_read = self.mem.read(final_address);
-        self.reg.update(dr, value_read);
+        let final_address = self.reg.get(br).wrapping_add(br_offset);
+        let value = self.mem.read(final_address);
+
+        self.reg.update(dr, value);
     }
 }
 

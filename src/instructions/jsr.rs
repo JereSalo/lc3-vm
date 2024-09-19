@@ -8,15 +8,19 @@ impl VM {
     pub fn op_jsr(&mut self, instr: u16) {
         let mode = (instr >> 11) & 1;
 
-        self.reg.update(7, self.reg.pc);
+        self.reg.update(7, self.reg.pc); // Saves PC in register 7
 
-        if mode == 0 {
-            let br = (instr >> 6) & 0b111;
-            self.reg.pc = self.reg.get(br);
-        } else {
-            let pc_offset = instr & 0b11111111111; // Because it is the last 11 bits
-            self.reg.pc = self.reg.pc.wrapping_add(sign_extend(pc_offset, 11));
-        }
+        
+        
+        let address = if mode == 0 { // Mode 0: JSRR, uses a register
+            let br = (instr >> 6) & 0b111; // Base Register
+            self.reg.get(br)
+        } else { // Mode 1: JSR, uses a 11-bit offset
+            let pc_offset = sign_extend(instr & 0b11111111111, 11);
+            self.reg.pc.wrapping_add(pc_offset)
+        };
+
+        self.reg.pc = address;
     }
 }
 

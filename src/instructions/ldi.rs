@@ -10,13 +10,12 @@ impl VM {
         let r0 = (instr >> 9) & 0x7;
 
         // Offset from PC (Program Counter)
-        let pc_offset: u16 = sign_extend(instr & 0x1FF, 9);
+        let pc_offset = sign_extend(instr & 0x1FF, 9);
 
-        // Use of wrapping_add for handling overflow cases (that happen when adding to a sign-extended negative number)
-        let position = self.reg.pc.wrapping_add(pc_offset);
+        let intermediate_address = self.reg.pc.wrapping_add(pc_offset);
 
-        let temp_value = self.mem.read(position);
-        let value = self.mem.read(temp_value);
+        let final_address = self.mem.read(intermediate_address);
+        let value = self.mem.read(final_address);
 
         self.reg.update(r0, value);
     }

@@ -4,13 +4,13 @@ use super::sign_extend;
 
 impl VM {
     /// ## Store
-    /// Stores a register value into memory.
+    /// Stores a register value into memory, address is offset from pc.
     pub fn op_st(&mut self, instr: u16) {
-        let sr = (instr >> 9) & 0b111;
+        let sr = (instr >> 9) & 0b111; // Source Register
         let pc_offset = sign_extend(instr & 0x1FF, 9);
 
-        let destination_address = self.reg.pc.wrapping_add(pc_offset);
         let value = self.reg.get(sr);
+        let destination_address = self.reg.pc.wrapping_add(pc_offset);
 
         self.mem.write(destination_address, value);
     }
