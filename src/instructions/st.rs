@@ -3,7 +3,7 @@ use crate::hardware::vm::VM;
 use super::sign_extend;
 
 impl VM {
-    /// Store
+    /// ## Store
     /// Stores a register value into memory.
     pub fn op_st(&mut self, instr: u16) {
         let sr = (instr >> 9) & 0b111;

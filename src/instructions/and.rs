@@ -3,32 +3,29 @@ use crate::hardware::vm::VM;
 use super::sign_extend;
 
 impl VM {
-    /// Bitwise AND
+    /// ## Bitwise AND
     /// Performs bitwise AND between two values and stores the result in a register.
     pub fn op_and(&mut self, instr: u16) {
         // Destination Register (DR) number
-        let r0 = (instr >> 9) & 0x7;
+        let dr = (instr >> 9) & 0x7;
 
         // First Operand (SR1) register number
-        let r1 = (instr >> 6) & 0x7;
+        let sr1 = (instr >> 6) & 0x7;
 
         // Flag that indicates mode (Immediate || Register)
         let imm_flag = (instr >> 5) & 0x1;
 
         let final_value = if imm_flag == 1 {
-            // Immediate mode: sign-extend the 5-bit immediate value to a 16bit one.
+            // Immediate mode: sign-extend the 5-bit imm value to 16bit and perform bitwise and with SR1
             let imm5 = sign_extend(instr & 0x1F, 5);
-            // self.reg.general[r1] & imm5 // Bitwise and
-            self.reg.get(r1) & imm5
+            self.reg.get(sr1) & imm5
         } else {
-            // Register mode: add the contents of the registers
+            // Register mode: Perform 'bitwise and' with both registers' content.
             let r2 = instr & 0x7;
-            // self.reg.general[r1] & self.reg.general[r2] // Bitwise and
-            self.reg.get(r1) & self.reg.get(r2)
+            self.reg.get(sr1) & self.reg.get(r2)
         };
-        // I used wrapping_add because it handles overflow cases correctly
 
-        self.reg.update(r0, final_value);
+        self.reg.update(dr, final_value);
     }
 }
 

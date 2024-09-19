@@ -3,30 +3,30 @@ use crate::hardware::vm::VM;
 use super::sign_extend;
 
 impl VM {
-    /// Addition
+    /// ## Addition
     /// Adds two numbers and stores the result in a register.
     pub fn op_add(&mut self, instr: u16) {
         // Destination Register (DR) number
-        let r0 = (instr >> 9) & 0x7;
+        let dr = (instr >> 9) & 0x7;
 
         // First Operand (SR1) register number
-        let r1 = (instr >> 6) & 0x7;
+        let sr1 = (instr >> 6) & 0x7;
 
         // Flag that indicates mode (Immediate || Register)
         let imm_flag = (instr >> 5) & 0x1;
 
         let final_value = if imm_flag == 1 {
-            // Immediate mode: sign-extend the 5-bit immediate value to a 16bit one.
+            // Immediate mode: sign-extend the 5-bit imm value to 16bit and add to SR1
             let imm5 = sign_extend(instr & 0x1F, 5);
-            self.reg.get(r1).wrapping_add(imm5)
+            self.reg.get(sr1).wrapping_add(imm5)
         } else {
-            // Register mode: add the contents of the registers
+            // Register mode: add the contents of both registers
             let r2 = instr & 0x7;
-            self.reg.get(r1).wrapping_add(self.reg.get(r2))
+            self.reg.get(sr1).wrapping_add(self.reg.get(r2))
         };
-        // I used wrapping_add because it handles overflow cases correctly
+        // Note: I used wrapping_add because it handles overflow cases correctly
 
-        self.reg.update(r0, final_value);
+        self.reg.update(dr, final_value);
     }
 }
 

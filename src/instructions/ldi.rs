@@ -3,7 +3,7 @@ use crate::hardware::vm::VM;
 use super::sign_extend;
 
 impl VM {
-    /// Load Indirect
+    /// ## Load Indirect
     /// Loads a value indirectly from memory into a register.
     pub fn op_ldi(&mut self, instr: u16) {
         // Destination Register

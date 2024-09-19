@@ -3,7 +3,7 @@ use crate::hardware::vm::VM;
 use super::sign_extend;
 
 impl VM {
-    /// Load Base + Offset
+    /// ## Load Base + Offset
     /// Loads a value from memory using a base register and an offset into a register.
     pub fn op_ldr(&mut self, instr: u16) {
         let dr = (instr >> 9) & 0b111; // Destination register.

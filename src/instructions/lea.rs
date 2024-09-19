@@ -3,7 +3,7 @@ use crate::hardware::vm::VM;
 use super::sign_extend;
 
 impl VM {
-    /// Load Effective Address
+    /// ## Load Effective Address
     /// Loads the effective address (not the value) into a register.
     pub fn op_lea(&mut self, instr: u16) {
         let dr = (instr >> 9) & 0b111;

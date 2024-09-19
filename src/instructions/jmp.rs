@@ -1,7 +1,7 @@
 use crate::hardware::vm::VM;
 
 impl VM {
-    /// Jump
+    /// ## Jump
     /// Jumps to a location specified by a register.
     pub fn op_jmp(&mut self, instr: u16) {
         let r = (instr >> 6) & 0b111;

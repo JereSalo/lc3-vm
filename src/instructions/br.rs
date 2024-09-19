@@ -3,16 +3,16 @@ use crate::hardware::vm::VM;
 use super::sign_extend;
 
 impl VM {
-    /// Branch
-    /// Conditional branch based on the condition flags.
+    /// ## Branch
+    /// Conditional jump with 9-bit offset in program execution based on the condition flags.
     pub fn op_br(&mut self, instr: u16) {
         // nzp: Negative - Zero - Positive. 
         let nzp_flags = (instr >> 9) & 0b111;
-        let pc_offset = instr & 0x1FF;
+        let pc_offset = sign_extend(instr & 0x1FF, 9);
 
         // True if the last operation's flag matches with one of the three flags.
         if nzp_flags & self.reg.cond as u16 > 0 {
-            self.reg.pc = self.reg.pc.wrapping_add(sign_extend(pc_offset, 9));
+            self.reg.pc = self.reg.pc.wrapping_add(pc_offset);
         }
     }
 }
