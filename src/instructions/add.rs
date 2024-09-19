@@ -58,7 +58,7 @@ mod tests {
 
         // Set initial values in registers
         vm.reg.update(1, 10); // SR1 (r1)
-        vm.reg.update(2, 0);  // SR2 (r2)
+        vm.reg.update(2, 0); // SR2 (r2)
 
         // Encoded instruction: ADD r0, r1, r2
         // Opcode: ADD (0001), DR: r0 (000), SR1: r1 (001), Mode: Register (0), SR2: r2 (010)

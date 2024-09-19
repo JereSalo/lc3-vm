@@ -10,7 +10,7 @@ enum MemoryMappedRegister {
     /// Keyboard Status
     MrKbsr = 0xFE00,
     /// Keyboard Data
-    MrKbdr = 0xFE02
+    MrKbdr = 0xFE02,
 }
 
 impl Default for Memory {

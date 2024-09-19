@@ -68,7 +68,10 @@ mod tests {
         let final_value = 0x5678;
 
         // At PC - 5, store the intermediate address
-        vm.mem.write((vm.reg.pc as i16 + pc_offset as i16) as u16, intermediate_address);
+        vm.mem.write(
+            (vm.reg.pc as i16 + pc_offset as i16) as u16,
+            intermediate_address,
+        );
 
         // At the intermediate address, store the final value
         vm.mem.write(intermediate_address, final_value);

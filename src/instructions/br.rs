@@ -6,7 +6,7 @@ impl VM {
     /// ## Branch
     /// Conditional jump with 9-bit offset in program execution based on the condition flags.
     pub fn op_br(&mut self, instr: u16) {
-        // nzp: Negative - Zero - Positive. 
+        // nzp: Negative - Zero - Positive.
         let nzp_flags = (instr >> 9) & 0b111;
         let pc_offset = sign_extend(instr & 0x1FF, 9);
 

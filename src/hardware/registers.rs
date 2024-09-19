@@ -37,7 +37,7 @@ impl Registers {
     /// Gets value of general purpose register
     // It could return an Option, with none if the index passed is out of bounds.
     // Should I handle errors in this? I mean there can't be any errors that happen unless I code an instruction in the wrong way...
-    pub fn get(&self, r:u16) -> u16 {
+    pub fn get(&self, r: u16) -> u16 {
         self.general[r as usize]
     }
 

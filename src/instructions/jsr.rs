@@ -10,10 +10,12 @@ impl VM {
 
         self.reg.update(7, self.reg.pc); // Saves PC in register 7
 
-        let address = if mode == 0 { // Mode 0: JSRR, uses a register
+        let address = if mode == 0 {
+            // Mode 0: JSRR, uses a register
             let br = (instr >> 6) & 0b111; // Base Register
             self.reg.get(br)
-        } else { // Mode 1: JSR, uses a 11-bit offset
+        } else {
+            // Mode 1: JSR, uses a 11-bit offset
             let pc_offset = sign_extend(instr & 0b11111111111, 11);
             self.reg.pc.wrapping_add(pc_offset)
         };

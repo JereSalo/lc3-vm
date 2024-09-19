@@ -1,8 +1,7 @@
 use crate::hardware::{memory::Memory, registers::*};
 use crate::instructions::*;
-use std::{env, fs::File, io::BufReader};
 use byteorder::{BigEndian, ReadBytesExt};
-
+use std::{env, fs::File, io::BufReader};
 
 pub struct VM {
     pub reg: Registers,
@@ -27,12 +26,12 @@ impl VM {
 
     pub fn load_arguments(&mut self) {
         let args: Vec<String> = env::args().collect();
-    
+
         if args.len() < 2 {
             eprintln!("cargo run [image-file1] ...");
             return;
         }
-    
+
         // Iterate over each argument (skipping the first one which is the program name)
         for arg in &args[1..] {
             self.read_image_file(arg);
@@ -45,10 +44,10 @@ impl VM {
             // Fetch instruction from memory
             let instruction_address = self.reg.pc;
             let instruction = self.mem.read(instruction_address);
-            
+
             // Increment PC
             self.reg.pc += 1;
-            
+
             // Decode opcode
             let raw_opcode = instruction >> 12;
             match Opcode::try_from(raw_opcode) {
@@ -60,7 +59,7 @@ impl VM {
             }
         }
     }
-    
+
     fn execute_instruction(&mut self, opcode: Opcode, instr: u16) {
         match opcode {
             Opcode::OpAdd => self.op_add(instr),
@@ -78,18 +77,15 @@ impl VM {
             Opcode::OpStr => self.op_str(instr),
             Opcode::OpTrap => self.op_trap(instr),
             Opcode::OpRes => {}
-            Opcode::OpRti => {}
-            // The last 2 are unused opcodes, I have to define what to do when they are called.
+            Opcode::OpRti => {} // The last 2 are unused opcodes, I have to define what to do when they are called.
         }
     }
 
     fn read_image_file(&mut self, file_path: &str) {
         let file = File::open(file_path).unwrap();
         let mut reader = BufReader::new(file);
-    
-        let mut address = reader
-            .read_u16::<BigEndian>()
-            .unwrap();
+
+        let mut address = reader.read_u16::<BigEndian>().unwrap();
         while let Ok(instr) = reader.read_u16::<BigEndian>() {
             self.mem.write(address, instr);
             address += 1;
