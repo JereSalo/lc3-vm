@@ -1,4 +1,5 @@
-use std::io::Write;
+use std::io::{self, Read, Write};
+use termios::{Termios, TCSANOW, tcsetattr, ECHO, ICANON};
 
 use crate::hardware::vm::VM;
 
@@ -10,20 +11,53 @@ impl VM {
         self.reg.update(7, self.reg.pc);
 
         // Check the lower byte of the instruction and execute the corresponding trap routine
-        match instr & 0xFF {
-            0x20 => { trap_getc(self); },
-            0x21 => { trap_out(self); },
-            0x22 => { trap_puts(self); },
-            0x23 => { trap_in(self); },
-            0x24 => { trap_putsp(self); },
-            0x25 => { trap_halt(self); },
-            _ => {}
+        let raw_trap_code = instr & 0xFF;
+
+        match TrapCode::try_from(raw_trap_code) {
+            Ok(trap_code) => {execute_trap(trap_code, self);}
+            _ => {} // Handle conversion error...
         }
     }
 }
 
-use std::io::{self, Read};
-use termios::{Termios, TCSANOW, tcsetattr, ECHO, ICANON};
+enum TrapCode {
+    GETC = 0x20,
+    OUT = 0x21,
+    PUTS = 0x22,
+    IN = 0x23,
+    PUTSP = 0x24,
+    HALT = 0x25
+}
+
+/// Convert u16 into Opcode
+impl TryFrom<u16> for TrapCode {
+    type Error = ();
+
+    fn try_from(value: u16) -> Result<Self, Self::Error> {
+        match value {
+            0x20 => Ok(TrapCode::GETC),
+            0x21 => Ok(TrapCode::OUT),
+            0x22 => Ok(TrapCode::PUTS),
+            0x23 => Ok(TrapCode::IN),
+            0x24 => Ok(TrapCode::PUTSP),
+            0x25 => Ok(TrapCode::HALT),
+            _ => Err(()),
+        }
+    }
+}
+
+fn execute_trap(trap_code: TrapCode, vm: &mut VM) {
+    match trap_code {
+        TrapCode::GETC => { trap_getc(vm); }
+        TrapCode::OUT => { trap_out(vm); },
+        TrapCode::PUTS => { trap_puts(vm); },
+        TrapCode::IN => { trap_in(vm); },
+        TrapCode::PUTSP => { trap_putsp(vm); },
+        TrapCode::HALT => { trap_halt(vm); },
+    }
+}
+
+// TRAP INSTRUCTIONS IMPLEMENTATION
 
 fn trap_getc(vm: &mut VM) {
     // Save current terminal settings
