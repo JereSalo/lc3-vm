@@ -28,6 +28,6 @@ mod tests {
 
         vm.op_lea(instr);
 
-        assert_eq!(vm.reg.general[1], expected_address)
+        assert_eq!(vm.reg.get(1), expected_address)
     }
 }

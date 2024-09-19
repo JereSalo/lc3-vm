@@ -32,6 +32,6 @@ mod tests {
         let instr = 0b0110_000_001_001010; // LDR to register 0 from register 1's address with offset 10.
         vm.op_ldr(instr);
 
-        assert_eq!(vm.reg.general[0], written_value); // It should be equal to that value that was written in memory before
+        assert_eq!(vm.reg.get(0), written_value); // It should be equal to that value that was written in memory before
     }
 }

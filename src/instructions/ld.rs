@@ -11,7 +11,7 @@ impl VM {
 
         let final_address = self.reg.pc.wrapping_add(pc_offset);
         let value_read = self.mem.read(final_address);
-        
+
         self.reg.update(dr, value_read);
     }
 }
@@ -31,6 +31,6 @@ mod tests {
         let instr = 0b0010_001_000001010; // LD to register 1 with pc_offset 10
         vm.op_ld(instr);
 
-        assert_eq!(vm.reg.general[1], written_value); // It should be equal to that value that was written in memory before
+        assert_eq!(vm.reg.get(1), written_value); // It should be equal to that value that was written in memory before
     }
 }

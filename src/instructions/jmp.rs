@@ -18,9 +18,8 @@ mod tests {
     fn jump() {
         let mut vm = VM::new();
         vm.reg.pc = 0x3000;
-        let r = 3;
         let expected_pc = 0x777;
-        vm.reg.update(r, expected_pc); // Store expected program count on register.
+        vm.reg.update(3, expected_pc); // Store expected program count on register.
 
         let instr = 0b1100_000_011_000000; // JMP to location in register 3 (011)
 

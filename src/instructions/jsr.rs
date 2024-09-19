@@ -10,8 +10,6 @@ impl VM {
 
         self.reg.update(7, self.reg.pc); // Saves PC in register 7
 
-        
-        
         let address = if mode == 0 { // Mode 0: JSRR, uses a register
             let br = (instr >> 6) & 0b111; // Base Register
             self.reg.get(br)
