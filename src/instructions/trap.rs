@@ -15,18 +15,21 @@ impl VM {
 
         match TrapCode::try_from(raw_trap_code) {
             Ok(trap_code) => {self.execute_trap(trap_code);}
-            _ => {} // Handle conversion error...
+            _ => {
+                eprintln!("Unknown trap code: {:#X}", raw_trap_code);
+                std::process::exit(1);
+            }
         }
     }
 }
 
 enum TrapCode {
-    GETC = 0x20,
-    OUT = 0x21,
-    PUTS = 0x22,
-    IN = 0x23,
-    PUTSP = 0x24,
-    HALT = 0x25
+    Getc = 0x20,
+    Out = 0x21,
+    Puts = 0x22,
+    In = 0x23,
+    Putsp = 0x24,
+    Halt = 0x25
 }
 
 /// Convert u16 into Opcode
@@ -35,12 +38,12 @@ impl TryFrom<u16> for TrapCode {
 
     fn try_from(value: u16) -> Result<Self, Self::Error> {
         match value {
-            0x20 => Ok(TrapCode::GETC),
-            0x21 => Ok(TrapCode::OUT),
-            0x22 => Ok(TrapCode::PUTS),
-            0x23 => Ok(TrapCode::IN),
-            0x24 => Ok(TrapCode::PUTSP),
-            0x25 => Ok(TrapCode::HALT),
+            0x20 => Ok(TrapCode::Getc),
+            0x21 => Ok(TrapCode::Out),
+            0x22 => Ok(TrapCode::Puts),
+            0x23 => Ok(TrapCode::In),
+            0x24 => Ok(TrapCode::Putsp),
+            0x25 => Ok(TrapCode::Halt),
             _ => Err(()),
         }
     }
@@ -49,12 +52,12 @@ impl TryFrom<u16> for TrapCode {
 impl VM {
     fn execute_trap(&mut self, trap_code: TrapCode) {
         match trap_code {
-            TrapCode::GETC => { self.trap_getc(); }
-            TrapCode::OUT => { self.trap_out(); },
-            TrapCode::PUTS => { self.trap_puts(); },
-            TrapCode::IN => { self.trap_in(); },
-            TrapCode::PUTSP => { self.trap_putsp(); },
-            TrapCode::HALT => { self.trap_halt(); },
+            TrapCode::Getc => { self.trap_getc(); }
+            TrapCode::Out => { self.trap_out(); },
+            TrapCode::Puts => { self.trap_puts(); },
+            TrapCode::In => { self.trap_in(); },
+            TrapCode::Putsp => { self.trap_putsp(); },
+            TrapCode::Halt => { self.trap_halt(); },
         }
     }
 
