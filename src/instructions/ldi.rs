@@ -7,16 +7,16 @@ impl VM {
     /// Loads a value indirectly from memory into a register.
     pub fn op_ldi(&mut self, instr: u16) {
         // Destination Register
-        let r0: usize = ((instr >> 9) & 0x7).into();
+        let r0 = (instr >> 9) & 0x7;
 
         // Offset from PC (Program Counter)
         let pc_offset: u16 = sign_extend(instr & 0x1FF, 9);
 
         // Use of wrapping_add for handling overflow cases (that happen when adding to a sign-extended negative number)
-        let position: usize = self.reg.pc.wrapping_add(pc_offset).into();
+        let position = self.reg.pc.wrapping_add(pc_offset);
 
-        let temp_value = self.mem.read(position).into();
-        let value = self.mem.read(temp_value);
+        let temp_value = self.mem.read(position as usize);
+        let value = self.mem.read(temp_value as usize);
 
         self.reg.update(r0, value);
     }

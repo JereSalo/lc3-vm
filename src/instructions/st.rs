@@ -6,13 +6,13 @@ impl VM {
     /// Store
     /// Stores a register value into memory.
     pub fn op_st(&mut self, instr: u16) {
-        let sr: usize = ((instr >> 9) & 0b111).into();
+        let sr = (instr >> 9) & 0b111;
         let pc_offset = sign_extend(instr & 0x1FF, 9);
 
-        let destination_address = (self.reg.pc.wrapping_add(pc_offset)).into();
-        let value = self.reg.general[sr];
+        let destination_address = self.reg.pc.wrapping_add(pc_offset);
+        let value = self.reg.get(sr);
 
-        self.mem.write(destination_address, value);
+        self.mem.write(destination_address as usize, value);
     }
 }
 

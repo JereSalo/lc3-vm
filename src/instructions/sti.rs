@@ -6,15 +6,15 @@ impl VM {
     /// Store Indirect
     /// Stores a register value indirectly into memory.
     pub fn op_sti(&mut self, instr: u16) {
-        let sr: usize = ((instr >> 9) & 0b111).into();
+        let sr = (instr >> 9) & 0b111;
         let pc_offset = sign_extend(instr & 0x1FF, 9);
 
-        let intermediate_address = (self.reg.pc.wrapping_add(pc_offset)).into();
-        let value = self.reg.general[sr];
+        let intermediate_address = self.reg.pc.wrapping_add(pc_offset);
+        let value = self.reg.get(sr);
 
-        let destination_address = (self.mem.read(intermediate_address)).into();
+        let destination_address = self.mem.read(intermediate_address as usize);
 
-        self.mem.write(destination_address, value);
+        self.mem.write(destination_address as usize, value);
     }
 }
 

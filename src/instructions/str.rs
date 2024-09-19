@@ -6,12 +6,12 @@ impl VM {
     /// Store Base + Offset
     /// Stores a register value into memory using a base register and an offset.
     pub fn op_str(&mut self, instr: u16) {
-        let sr: usize = ((instr >> 9) & 0b111).into();
-        let br: usize = ((instr >> 6) & 0b111).into();
+        let sr = (instr >> 9) & 0b111;
+        let br = (instr >> 6) & 0b111;
         let offset = instr & 0b111111;
 
-        let address = (self.reg.general[br].wrapping_add(sign_extend(offset, 6))).into();
-        let value = self.reg.general[sr];
+        let address = (self.reg.get(br).wrapping_add(sign_extend(offset, 6))).into();
+        let value = self.reg.get(sr);
         self.mem.write(address, value);
     }
 }

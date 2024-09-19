@@ -11,8 +11,8 @@ impl VM {
         self.reg.update(7, self.reg.pc);
 
         if mode == 0 {
-            let br: usize = ((instr >> 6) & 0b111).into();
-            self.reg.pc = self.reg.general[br];
+            let br = (instr >> 6) & 0b111;
+            self.reg.pc = self.reg.get(br);
         } else {
             let pc_offset = instr & 0b11111111111; // Because it is the last 11 bits
             self.reg.pc = self.reg.pc.wrapping_add(sign_extend(pc_offset, 11));

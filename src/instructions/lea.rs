@@ -6,7 +6,7 @@ impl VM {
     /// Load Effective Address
     /// Loads the effective address (not the value) into a register.
     pub fn op_lea(&mut self, instr: u16) {
-        let dr: usize = ((instr >> 9) & 0b111).into();
+        let dr = (instr >> 9) & 0b111;
         let pc_offset = sign_extend(instr & 0x1FF, 9);
 
         let value = self.reg.pc.wrapping_add(pc_offset);

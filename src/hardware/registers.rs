@@ -29,9 +29,21 @@ impl Registers {
         }
     }
 
-    pub fn update(&mut self, r: usize, value: u16) {
-        self.general[r] = value;
-        self.update_flags(r);
+    // pub fn update(&mut self, r: usize, value: u16) {
+    //     self.general[r] = value;
+    //     self.update_flags(r as usize);
+    // }
+
+    pub fn update(&mut self, r: u16, value: u16) {
+        self.general[r as usize] = value;
+        self.update_flags(r as usize);
+    }
+
+    /// Gets value of general purpose register
+    // It could return an Option, with none if the index passed is out of bounds.
+    // Should I handle errors in this? I mean there can't be any errors that happen unless I code an instruction in the wrong way...
+    pub fn get(&self, r:u16) -> u16 {
+        self.general[r as usize]
     }
 
     fn update_flags(&mut self, r: usize) {

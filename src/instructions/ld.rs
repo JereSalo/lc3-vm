@@ -6,11 +6,11 @@ impl VM {
     /// Load
     /// Gets a destination register and a pc_offset, and writes into that register the value in memory location PC + Offset.
     pub fn op_ld(&mut self, instr: u16) {
-        let dr: usize = ((instr >> 9) & 0b111).into(); // Destination register.
+        let dr = (instr >> 9) & 0b111; // Destination register.
         let pc_offset = sign_extend(instr & 0x1FF, 9);
 
-        let final_address = (self.reg.pc.wrapping_add(pc_offset)).into();
-        let value_read = self.mem.read(final_address);
+        let final_address = self.reg.pc.wrapping_add(pc_offset);
+        let value_read = self.mem.read(final_address as usize);
         self.reg.update(dr, value_read);
     }
 }
