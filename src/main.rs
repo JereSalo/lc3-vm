@@ -1,5 +1,7 @@
-use lc3_vm::hardware::vm::VM;
+pub mod hardware;
+pub mod instructions;
 
+use hardware::vm::VM;
 fn main() {
     let mut vm = VM::new();
 
