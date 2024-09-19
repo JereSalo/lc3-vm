@@ -13,7 +13,7 @@ make rogue  # Run rogue.obj
 ### Testing
 Run opcode tests:
 ```bash
-cargo test
+make test
 ```
 
 ### Code Quality
