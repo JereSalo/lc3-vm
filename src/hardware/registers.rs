@@ -29,11 +29,6 @@ impl Registers {
         }
     }
 
-    // pub fn update(&mut self, r: usize, value: u16) {
-    //     self.general[r] = value;
-    //     self.update_flags(r as usize);
-    // }
-
     pub fn update(&mut self, r: u16, value: u16) {
         self.general[r as usize] = value;
         self.update_flags(r as usize);
