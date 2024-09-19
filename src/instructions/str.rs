@@ -10,7 +10,7 @@ impl VM {
         let br = (instr >> 6) & 0b111;
         let offset = instr & 0b111111;
 
-        let address = (self.reg.get(br).wrapping_add(sign_extend(offset, 6))).into();
+        let address = self.reg.get(br).wrapping_add(sign_extend(offset, 6));
         let value = self.reg.get(sr);
         self.mem.write(address, value);
     }
@@ -31,7 +31,7 @@ mod tests {
 
         vm.op_str(instr);
 
-        let actual_value = vm.mem.read((vm.reg.general[1] + 10).into());
+        let actual_value = vm.mem.read(vm.reg.general[1] + 10);
 
         assert_eq!(actual_value, expected_value);
     }

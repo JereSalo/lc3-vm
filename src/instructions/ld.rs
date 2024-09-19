@@ -10,7 +10,7 @@ impl VM {
         let pc_offset = sign_extend(instr & 0x1FF, 9);
 
         let final_address = self.reg.pc.wrapping_add(pc_offset);
-        let value_read = self.mem.read(final_address as usize);
+        let value_read = self.mem.read(final_address);
         self.reg.update(dr, value_read);
     }
 }

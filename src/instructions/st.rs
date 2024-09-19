@@ -12,7 +12,7 @@ impl VM {
         let destination_address = self.reg.pc.wrapping_add(pc_offset);
         let value = self.reg.get(sr);
 
-        self.mem.write(destination_address as usize, value);
+        self.mem.write(destination_address, value);
     }
 }
 
@@ -31,7 +31,7 @@ mod tests {
 
         vm.op_st(instr);
 
-        let actual_value = vm.mem.read((vm.reg.pc + 10).into());
+        let actual_value = vm.mem.read(vm.reg.pc + 10);
 
         assert_eq!(actual_value, expected_value);
     }

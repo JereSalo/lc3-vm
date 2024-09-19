@@ -43,7 +43,7 @@ impl VM {
         self.reg.pc = PC_START;
         while self.running {
             // Fetch instruction from memory
-            let instruction_address: usize = self.reg.pc.into();
+            let instruction_address = self.reg.pc;
             let instruction = self.mem.read(instruction_address);
             
             // Increment PC
@@ -91,7 +91,7 @@ impl VM {
             .read_u16::<BigEndian>()
             .unwrap();
         while let Ok(instr) = reader.read_u16::<BigEndian>() {
-            self.mem.write(address as usize, instr);
+            self.mem.write(address, instr);
             address += 1;
         }
     }

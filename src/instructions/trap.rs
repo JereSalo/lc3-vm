@@ -54,7 +54,7 @@ fn trap_out(vm: &mut VM) {
 }
 
 fn trap_puts(vm: &mut VM) {
-    let mut address = vm.reg.general[0] as usize; // Starting address from R0
+    let mut address = vm.reg.general[0]; // Starting address from R0
 
     // Loop over the memory starting from the address in R0 until we hit a zero (null terminator)
     loop {
@@ -96,7 +96,7 @@ fn trap_in(vm: &mut VM) {
 }
 
 fn trap_putsp(vm: &mut VM) {
-    let mut address = vm.reg.general[0] as usize; // Starting address from R0
+    let mut address = vm.reg.general[0]; // Starting address from R0
 
     // Loop through memory until a word containing 0x0000 is found
     loop {

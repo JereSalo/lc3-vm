@@ -12,9 +12,9 @@ impl VM {
         let intermediate_address = self.reg.pc.wrapping_add(pc_offset);
         let value = self.reg.get(sr);
 
-        let destination_address = self.mem.read(intermediate_address as usize);
+        let destination_address = self.mem.read(intermediate_address);
 
-        self.mem.write(destination_address as usize, value);
+        self.mem.write(destination_address, value);
     }
 }
 
