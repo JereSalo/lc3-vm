@@ -1,4 +1,4 @@
-use crate::hardware::{vm::VM, vm_error::VmError};
+use crate::components::{vm::VM, vm_error::VmError};
 
 impl VM {
     /// ## Jump

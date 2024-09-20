@@ -1,7 +1,7 @@
-pub mod hardware;
+pub mod components;
 pub mod instructions;
 
-use hardware::vm::VM;
+use components::vm::VM;
 fn main() {
     let mut vm = VM::new();
 

@@ -1,4 +1,4 @@
-use crate::hardware::{memory::Memory, registers::*, vm_error::VmError};
+use crate::components::{memory::Memory, registers::*, vm_error::VmError};
 use crate::instructions::*;
 use byteorder::{BigEndian, ReadBytesExt};
 use std::{env, fs::File, io::BufReader};

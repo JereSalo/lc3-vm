@@ -1,4 +1,4 @@
-use crate::hardware::vm_error::VmError;
+use crate::components::vm_error::VmError;
 
 pub mod add;
 pub mod and;

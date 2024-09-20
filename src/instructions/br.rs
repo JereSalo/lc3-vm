@@ -1,4 +1,4 @@
-use crate::hardware::{vm::VM, vm_error::VmError};
+use crate::components::{vm::VM, vm_error::VmError};
 
 use super::sign_extend;
 
@@ -21,7 +21,7 @@ impl VM {
 #[cfg(test)]
 mod tests {
     use super::VM;
-    use crate::hardware::registers::ConditionFlag;
+    use crate::components::registers::ConditionFlag;
 
     #[test]
     fn test_op_br_pos_true() {

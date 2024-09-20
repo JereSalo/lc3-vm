@@ -1,7 +1,7 @@
 use std::io::{self, Read, Write};
 use termios::{tcsetattr, Termios, ECHO, ICANON, TCSANOW};
 
-use crate::hardware::{vm::VM, vm_error::VmError};
+use crate::components::{vm::VM, vm_error::VmError};
 
 impl VM {
     /// ## Trap
