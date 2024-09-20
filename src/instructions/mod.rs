@@ -1,3 +1,5 @@
+use crate::hardware::vm_error::VmError;
+
 pub mod add;
 pub mod and;
 pub mod br;
@@ -39,9 +41,8 @@ pub enum Opcode {
     OpTrap, // Trap
 }
 
-/// Convert u16 into Opcode
 impl TryFrom<u16> for Opcode {
-    type Error = ();
+    type Error = VmError;
 
     fn try_from(value: u16) -> Result<Self, Self::Error> {
         match value {
@@ -61,7 +62,7 @@ impl TryFrom<u16> for Opcode {
             13 => Ok(Opcode::OpRes),
             14 => Ok(Opcode::OpLea),
             15 => Ok(Opcode::OpTrap),
-            _ => Err(()),
+            _ => Err(VmError::InvalidOpcode),
         }
     }
 }

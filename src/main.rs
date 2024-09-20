@@ -5,7 +5,5 @@ use hardware::vm::VM;
 fn main() {
     let mut vm = VM::new();
 
-    vm.load_arguments();
-
     vm.run().unwrap_or_else(|e| eprintln!("{}", e));
 }

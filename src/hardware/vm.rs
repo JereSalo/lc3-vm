@@ -1,6 +1,7 @@
 use crate::hardware::{memory::Memory, registers::*, vm_error::VmError};
 use crate::instructions::*;
 use byteorder::{BigEndian, ReadBytesExt};
+use std::os::macos::raw;
 use std::{env, fs::File, io::{BufReader}};
 use termios::{tcsetattr, Termios, TCSANOW, ECHO, ICANON};
 
@@ -25,21 +26,22 @@ impl VM {
         }
     }
 
-    pub fn load_arguments(&mut self) {
+    pub fn load_arguments(&mut self) -> Result<(), VmError> {
         let args: Vec<String> = env::args().collect();
 
         if args.len() < 2 {
-            eprintln!("cargo run [image-file1] ...");
-            return;
+            return Err(VmError::InvalidArguments);
         }
 
         // Iterate over each argument (skipping the first one which is the program name)
         for arg in &args[1..] {
-            self.read_image_file(arg);
+            self.read_image_file(arg)?;
         }
+        Ok(())
     }
 
     pub fn run(&mut self) -> Result<(), VmError> {
+        self.load_arguments()?;
         // Disable input buffering and store the original terminal settings
         let original_termios = disable_input_buffering()?;
 
@@ -54,13 +56,7 @@ impl VM {
 
             // Decode opcode
             let raw_opcode = instruction >> 12;
-            match Opcode::try_from(raw_opcode) {
-                Ok(opcode) => self.execute_instruction(opcode, instruction),
-                Err(_) => {
-                    eprintln!("Unknown opcode: {:#X}", raw_opcode);
-                    break; // It should finish execution if there's a bad opcode.
-                }
-            }
+            self.execute_instruction(Opcode::try_from(raw_opcode)?, instruction)?;
         }
 
         // Restore input buffering
@@ -68,7 +64,7 @@ impl VM {
         Ok(())
     }
 
-    fn execute_instruction(&mut self, opcode: Opcode, instr: u16) {
+    fn execute_instruction(&mut self, opcode: Opcode, instr: u16) -> Result<(), VmError> {
         match opcode {
             Opcode::OpAdd => self.op_add(instr),
             Opcode::OpAnd => self.op_and(instr),
@@ -84,9 +80,10 @@ impl VM {
             Opcode::OpSti => self.op_sti(instr),
             Opcode::OpStr => self.op_str(instr),
             Opcode::OpTrap => self.op_trap(instr),
-            Opcode::OpRes => {}
-            Opcode::OpRti => {} // The last 2 are unused opcodes, I have to define what to do when they are called.
+            Opcode::OpRes => {return Err(VmError::BadOpcode)}
+            Opcode::OpRti => {return Err(VmError::BadOpcode)} // The last 2 are unused opcodes, I have to define what to do when they are called.
         }
+        Ok(())
     }
 
     fn read_image_file(&mut self, file_path: &str) -> Result<(), VmError> {
