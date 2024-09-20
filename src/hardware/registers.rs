@@ -45,7 +45,10 @@ impl Registers {
     // It could return an Option, with none if the index passed is out of bounds.
     // Should I handle errors in this? I mean there can't be any errors that happen unless I code an instruction in the wrong way...
     pub fn get(&self, r: u16) -> Result<u16, VmError> {
-        self.general.get(r as usize).copied().ok_or(VmError::InvalidRegister)
+        self.general
+            .get(r as usize)
+            .copied()
+            .ok_or(VmError::InvalidRegister)
     }
 
     fn update_flags(&mut self, r: usize) {

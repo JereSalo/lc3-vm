@@ -6,7 +6,7 @@ use crate::hardware::{vm::VM, vm_error::VmError};
 impl VM {
     /// ## Trap
     /// Executes a trap instruction, which handles I/O operations and system calls.
-    pub fn op_trap(&mut self, instr: u16) -> Result<(), VmError>{
+    pub fn op_trap(&mut self, instr: u16) -> Result<(), VmError> {
         // Save the program counter to general-purpose register 7
         self.reg.update(7, self.reg.pc)?;
 
@@ -14,7 +14,7 @@ impl VM {
         let raw_trap_code = instr & 0xFF;
 
         self.execute_trap(TrapCode::try_from(raw_trap_code)?)?;
-        
+
         Ok(())
     }
 }
@@ -46,7 +46,7 @@ impl TryFrom<u16> for TrapCode {
 }
 
 impl VM {
-    fn execute_trap(&mut self, trap_code: TrapCode) -> Result<(), VmError>{
+    fn execute_trap(&mut self, trap_code: TrapCode) -> Result<(), VmError> {
         match trap_code {
             TrapCode::Getc => {
                 self.trap_getc()?;

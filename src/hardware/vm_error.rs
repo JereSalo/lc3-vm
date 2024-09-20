@@ -8,7 +8,7 @@ pub enum VmError {
     InvalidTrapCode,
     ReadImage(String),
     InvalidArguments,
-    InvalidRegister
+    InvalidRegister,
 }
 
 // Implementing `Display` for `VmError`
@@ -20,8 +20,12 @@ impl fmt::Display for VmError {
             VmError::BadOpcode => write!(f, "Bad Opcode encountered"),
             VmError::InvalidTrapCode => write!(f, "Invalid Trap Code encountered"),
             VmError::ReadImage(msg) => write!(f, "Error reading image file: {}", msg),
-            VmError::InvalidArguments => write!(f, "Invalid arguments: Use 'cargo run <image_file> ..'"),
-            VmError::InvalidRegister => write!(f, "Register out of bounds! Valid registers are 0 to 7.") // This would happen if programmer made a mistake
+            VmError::InvalidArguments => {
+                write!(f, "Invalid arguments: Use 'cargo run <image_file> ..'")
+            }
+            VmError::InvalidRegister => {
+                write!(f, "Register out of bounds! Valid registers are 0 to 7.")
+            } // This would happen if programmer made a mistake
         }
     }
 }
