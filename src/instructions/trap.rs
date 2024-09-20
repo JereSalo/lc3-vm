@@ -73,22 +73,22 @@ impl VM {
     fn trap_getc(&mut self) -> Result<(), VmError> {
         // Save current terminal settings
         let stdin_fd = 0; // File descriptor for stdin
-        let termios = Termios::from_fd(stdin_fd).map_err(|e| VmError::Io(e))?;
+        let termios = Termios::from_fd(stdin_fd).map_err(VmError::Io)?;
         let mut termios_raw = termios;
 
         // Disable echo and canonical mode
         termios_raw.c_lflag &= !(ECHO | ICANON);
-        tcsetattr(stdin_fd, TCSANOW, &termios_raw).map_err(|e| VmError::Io(e))?;
+        tcsetattr(stdin_fd, TCSANOW, &termios_raw).map_err(VmError::Io)?;
 
         // Read a single byte (char)
         let mut buffer = [0u8; 1];
-        io::stdin().read_exact(&mut buffer).map_err(|e| VmError::Io(e))?;
+        io::stdin().read_exact(&mut buffer).map_err(VmError::Io)?;
 
         // Store the read character in R0 (converted to u16)
         self.reg.update(0, buffer[0] as u16)?;
 
         // Restore the original terminal settings
-        tcsetattr(stdin_fd, TCSANOW, &termios).map_err(|e| VmError::Io(e))?;
+        tcsetattr(stdin_fd, TCSANOW, &termios).map_err(VmError::Io)?;
         Ok(())
     }
 
@@ -96,7 +96,7 @@ impl VM {
         // Extract the lower 8 bits (R0[7:0]) from the R0 register
         let ch = (self.reg.get(0)? & 0xFF) as u8 as char;
         print!("{}", ch);
-        std::io::stdout().flush().map_err(|e| VmError::Io(e))?;
+        std::io::stdout().flush().map_err(VmError::Io)?;
         Ok(())
     }
 
@@ -121,23 +121,23 @@ impl VM {
         }
 
         // Flush stdout to ensure all output is printed
-        std::io::stdout().flush().map_err(|e| VmError::Io(e))?;
+        std::io::stdout().flush().map_err(VmError::Io)?;
         Ok(())
     }
 
     fn trap_in(&mut self) -> Result<(), VmError> {
         // Print the prompt
         print!("Enter a character: ");
-        io::stdout().flush().map_err(|e| VmError::Io(e))?; // Ensure the prompt is printed immediately
+        io::stdout().flush().map_err(VmError::Io)?; // Ensure the prompt is printed immediately
 
         // Read a single character from stdin
         let mut buffer = [0u8; 1]; // Buffer to hold the single byte input
-        io::stdin().read_exact(&mut buffer).map_err(|e| VmError::Io(e))?;
+        io::stdin().read_exact(&mut buffer).map_err(VmError::Io)?;
 
         // Echo the character to the console
         let ch = buffer[0] as char;
         print!("{}", ch);
-        io::stdout().flush().map_err(|e| VmError::Io(e))?; // Flush the output to ensure the character is printed
+        io::stdout().flush().map_err(VmError::Io)?; // Flush the output to ensure the character is printed
 
         // Store the ASCII value of the character in R0, clearing the high 8 bits
         self.reg.update(0, buffer[0] as u16)?;
@@ -171,7 +171,7 @@ impl VM {
         }
 
         // Flush the output to make sure it's displayed immediately
-        std::io::stdout().flush().map_err(|e| VmError::Io(e))?;
+        std::io::stdout().flush().map_err(VmError::Io)?;
         Ok(())
     }
 

@@ -79,7 +79,7 @@ impl VM {
             Opcode::OpSti => self.op_sti(instr),
             Opcode::OpStr => self.op_str(instr),
             Opcode::OpTrap => self.op_trap(instr),
-            _ => return Err(VmError::BadOpcode), // OpRes and OpRti are Bad Opcodes.
+            _ => Err(VmError::BadOpcode), // OpRes and OpRti are Bad Opcodes.
         }
     }
 
@@ -105,14 +105,13 @@ impl VM {
 // Helper function to disable input buffering and return the original terminal settings
 fn disable_input_buffering() -> Result<Termios, VmError> {
     let stdin_fd = 0; // File descriptor for stdin
-    let mut termios = Termios::from_fd(stdin_fd).map_err(|e| VmError::Io(e))?;
-    let original_termios = termios.clone();
+    let mut termios = Termios::from_fd(stdin_fd).map_err(VmError::Io)?;
     termios.c_lflag &= !(ICANON | ECHO); // Disable canonical mode and echo
-    tcsetattr(stdin_fd, TCSANOW, &termios).map_err(|e| VmError::Io(e))?;
-    Ok(original_termios)
+    tcsetattr(stdin_fd, TCSANOW, &termios).map_err(VmError::Io)?;
+    Ok(termios)
 }
 
 fn restore_input_buffering(original_termios: Termios) -> Result<(), VmError> {
-    tcsetattr(0, TCSANOW, &original_termios).map_err(|e| VmError::Io(e))?;
+    tcsetattr(0, TCSANOW, &original_termios).map_err(VmError::Io)?;
     Ok(())
 }
