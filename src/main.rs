@@ -7,5 +7,5 @@ fn main() {
 
     vm.load_arguments();
 
-    vm.run();
+    vm.run().unwrap_or_else(|e| eprintln!("{}", e));
 }

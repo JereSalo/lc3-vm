@@ -89,15 +89,22 @@ impl VM {
         }
     }
 
-    fn read_image_file(&mut self, file_path: &str) {
-        let file = File::open(file_path).unwrap();
+    fn read_image_file(&mut self, file_path: &str) -> Result<(), VmError> {
+        // Attempt to open the file and map any I/O error to a `VmError::ReadImage`
+        let file = File::open(file_path).map_err(|e| VmError::ReadImage(format!("Failed to open file '{}': {}", file_path, e)))?;
         let mut reader = BufReader::new(file);
-
-        let mut address = reader.read_u16::<BigEndian>().unwrap();
+    
+        // Read the initial address from the file and map any I/O error to a `VmError::ReadImage`
+        let mut address = reader.read_u16::<BigEndian>()
+            .map_err(|e| VmError::ReadImage(format!("Failed to read initial address from '{}': {}", file_path, e)))?;
+        
+        // Read instructions from the file and write them to memory until EOF or an error occurs
         while let Ok(instr) = reader.read_u16::<BigEndian>() {
             self.mem.write(address, instr);
             address += 1;
         }
+    
+        Ok(()) // Return Ok(()) if no errors occurred
     }
 }
 
