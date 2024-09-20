@@ -1,7 +1,8 @@
 use crate::hardware::{memory::Memory, registers::*};
 use crate::instructions::*;
 use byteorder::{BigEndian, ReadBytesExt};
-use std::{env, fs::File, io::BufReader};
+use std::{env, fs::File, io::{BufReader}};
+use termios::{tcsetattr, Termios, TCSANOW, ECHO, ICANON};
 
 pub struct VM {
     pub reg: Registers,
@@ -39,6 +40,9 @@ impl VM {
     }
 
     pub fn run(&mut self) {
+        // Disable input buffering and store the original terminal settings
+        let original_termios = disable_input_buffering();
+
         self.reg.pc = PC_START;
         while self.running {
             // Fetch instruction from memory
@@ -58,6 +62,9 @@ impl VM {
                 }
             }
         }
+
+        // Restore input buffering
+        restore_input_buffering(original_termios);
     }
 
     fn execute_instruction(&mut self, opcode: Opcode, instr: u16) {
@@ -91,4 +98,18 @@ impl VM {
             address += 1;
         }
     }
+}
+
+// Helper function to disable input buffering and return the original terminal settings
+fn disable_input_buffering() -> Termios {
+    let stdin_fd = 0; // File descriptor for stdin
+    let mut termios = Termios::from_fd(stdin_fd).unwrap();
+    let original_termios = termios.clone();
+    termios.c_lflag &= !(ICANON | ECHO); // Disable canonical mode and echo
+    tcsetattr(stdin_fd, TCSANOW, &termios).unwrap();
+    original_termios
+}
+
+fn restore_input_buffering(original_termios: Termios) {
+    tcsetattr(0, TCSANOW, &original_termios).unwrap();
 }
