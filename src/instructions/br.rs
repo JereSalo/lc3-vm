@@ -1,4 +1,4 @@
-use crate::hardware::vm::VM;
+use crate::hardware::{vm::VM, vm_error::VmError};
 
 use super::sign_extend;
 
@@ -14,6 +14,7 @@ impl VM {
         if nzp_flags & self.reg.cond as u16 > 0 {
             self.reg.pc = self.reg.pc.wrapping_add(pc_offset);
         }
+        Ok(())
     }
 }
 
@@ -30,7 +31,7 @@ mod tests {
         vm.reg.pc = 0x3000;
 
         let instr = 0b0000_001_000001010; // BRp with offset 10
-        vm.op_br(instr);
+        vm.op_br(instr).unwrap();
 
         let expected_pc = 0x300A;
 
@@ -46,7 +47,7 @@ mod tests {
         let expected_pc = vm.reg.pc; // Shouldn't change the PC after this operation.
 
         let instr = 0b0000_001_000001010; // BRp with offset 10
-        vm.op_br(instr);
+        vm.op_br(instr).unwrap();
 
         assert_eq!(expected_pc, vm.reg.pc);
     }

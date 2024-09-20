@@ -1,5 +1,3 @@
-use std::vec;
-
 use super::vm_error::VmError;
 
 pub const PC_START: u16 = 0x3000;

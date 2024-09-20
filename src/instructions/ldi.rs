@@ -1,4 +1,4 @@
-use crate::hardware::vm::VM;
+use crate::hardware::{vm::VM, vm_error::VmError};
 
 use super::sign_extend;
 
@@ -17,7 +17,8 @@ impl VM {
         let final_address = self.mem.read(intermediate_address);
         let value = self.mem.read(final_address);
 
-        self.reg.update(r0, value);
+        self.reg.update(r0, value)?;
+        Ok(())
     }
 }
 
@@ -52,10 +53,10 @@ mod tests {
         let instr = 0b1010_000_000001010;
 
         // Execute LDI instruction
-        vm.op_ldi(instr);
+        vm.op_ldi(instr).unwrap();
 
         // Check that r0 now contains the final value
-        assert_eq!(vm.reg.get(0), final_value);
+        assert_eq!(vm.reg.get(0).unwrap(), final_value);
     }
 
     #[test]
@@ -80,10 +81,10 @@ mod tests {
         let instr = 0b1010_000_111111011;
 
         // Execute LDI instruction
-        vm.op_ldi(instr);
+        vm.op_ldi(instr).unwrap();
 
         // Check that r0 now contains the final value
-        assert_eq!(vm.reg.get(0), final_value);
+        assert_eq!(vm.reg.get(0).unwrap(), final_value);
     }
 
     #[test]
@@ -104,10 +105,10 @@ mod tests {
         let instr = 0b1010_000_000000000;
 
         // Execute LDI instruction
-        vm.op_ldi(instr);
+        vm.op_ldi(instr).unwrap();
 
         // Check that r0 now contains the final value
-        assert_eq!(vm.reg.get(0), final_value);
+        assert_eq!(vm.reg.get(0).unwrap(), final_value);
     }
 
     #[test]
@@ -131,9 +132,9 @@ mod tests {
         let instr = 0b1010_000_011111111; // 255 is the max value for a 9-bit signed offset
 
         // Execute LDI instruction
-        vm.op_ldi(instr);
+        vm.op_ldi(instr).unwrap();
 
         // Check that r0 now contains the final value
-        assert_eq!(vm.reg.get(0), final_value);
+        assert_eq!(vm.reg.get(0).unwrap(), final_value);
     }
 }

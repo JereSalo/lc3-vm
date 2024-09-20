@@ -1,4 +1,4 @@
-use std::{io::{self, Read, Write}, os::macos::raw};
+use std::io::{self, Read, Write};
 use termios::{tcsetattr, Termios, ECHO, ICANON, TCSANOW};
 
 use crate::hardware::{vm::VM, vm_error::VmError};
@@ -8,7 +8,7 @@ impl VM {
     /// Executes a trap instruction, which handles I/O operations and system calls.
     pub fn op_trap(&mut self, instr: u16) -> Result<(), VmError>{
         // Save the program counter to general-purpose register 7
-        self.reg.update(7, self.reg.pc);
+        self.reg.update(7, self.reg.pc)?;
 
         // Check the lower byte of the instruction and execute the corresponding trap routine
         let raw_trap_code = instr & 0xFF;
@@ -85,7 +85,7 @@ impl VM {
         io::stdin().read_exact(&mut buffer).map_err(|e| VmError::Io(e))?;
 
         // Store the read character in R0 (converted to u16)
-        self.reg.update(0, buffer[0] as u16);
+        self.reg.update(0, buffer[0] as u16)?;
 
         // Restore the original terminal settings
         tcsetattr(stdin_fd, TCSANOW, &termios).map_err(|e| VmError::Io(e))?;
@@ -140,7 +140,7 @@ impl VM {
         io::stdout().flush().map_err(|e| VmError::Io(e))?; // Flush the output to ensure the character is printed
 
         // Store the ASCII value of the character in R0, clearing the high 8 bits
-        self.reg.update(0, buffer[0] as u16);
+        self.reg.update(0, buffer[0] as u16)?;
         Ok(())
     }
 
