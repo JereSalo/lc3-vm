@@ -80,8 +80,7 @@ impl VM {
             Opcode::OpSti => self.op_sti(instr),
             Opcode::OpStr => self.op_str(instr),
             Opcode::OpTrap => self.op_trap(instr),
-            Opcode::OpRes => {return Err(VmError::BadOpcode)}
-            Opcode::OpRti => {return Err(VmError::BadOpcode)} // The last 2 are unused opcodes, I have to define what to do when they are called.
+            _ => return Err(VmError::BadOpcode), // OpRes and OpRti are Bad Opcodes.
         }
         Ok(())
     }
