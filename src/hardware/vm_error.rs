@@ -1,14 +1,17 @@
 use std::fmt::{self};
 use std::io::Error;
 
+use crate::instructions::Opcode;
+
 pub enum VmError {
     Io(Error),
-    InvalidOpcode,
-    BadOpcode,
-    InvalidTrapCode,
     ReadImage(String),
+    BadOpcode(Opcode),
+    InvalidOpcode(u16),
+    InvalidTrapCode(u16),
     InvalidArguments,
-    InvalidRegister,
+    InvalidRegister(u16),
+    PcOverflow
 }
 
 // Implementing `Display` for `VmError`
@@ -16,16 +19,19 @@ impl fmt::Display for VmError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             VmError::Io(err) => write!(f, "I/O Error: {}", err),
-            VmError::InvalidOpcode => write!(f, "Invalid Opcode encountered"),
-            VmError::BadOpcode => write!(f, "Bad Opcode encountered"),
-            VmError::InvalidTrapCode => write!(f, "Invalid Trap Code encountered"),
+            VmError::InvalidOpcode(value) => write!(f, "Invalid Opcode encountered: {}", value),
+            VmError::BadOpcode(opcode) => write!(f, "Bad Opcode encountered: {}", opcode),
+            VmError::InvalidTrapCode(value) => write!(f, "Invalid Trap Code encountered: {}", value),
             VmError::ReadImage(msg) => write!(f, "Error reading image file: {}", msg),
             VmError::InvalidArguments => {
                 write!(f, "Invalid arguments: Use 'cargo run <image_file> ..'")
             }
-            VmError::InvalidRegister => {
-                write!(f, "Register out of bounds! Valid registers are 0 to 7.")
+            VmError::InvalidRegister(reg) => {
+                write!(f, "Register out of bounds! Valid registers are 0 to 7. Actual value: {}", reg)
             } // This would happen if programmer made a mistake
+            VmError::PcOverflow => {
+                write!(f, "Overflow of Program Counter has ocurred!")
+            }
         }
     }
 }

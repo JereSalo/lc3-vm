@@ -40,7 +40,7 @@ impl TryFrom<u16> for TrapCode {
             0x23 => Ok(TrapCode::In),
             0x24 => Ok(TrapCode::Putsp),
             0x25 => Ok(TrapCode::Halt),
-            _ => Err(VmError::InvalidTrapCode),
+            _ => Err(VmError::InvalidTrapCode(value)),
         }
     }
 }

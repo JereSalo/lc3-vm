@@ -37,18 +37,16 @@ impl Registers {
             self.update_flags(r as usize);
             Ok(())
         } else {
-            Err(VmError::InvalidTrapCode)
+            Err(VmError::InvalidRegister(r))
         }
     }
 
     /// Gets value of general purpose register
-    // It could return an Option, with none if the index passed is out of bounds.
-    // Should I handle errors in this? I mean there can't be any errors that happen unless I code an instruction in the wrong way...
     pub fn get(&self, r: u16) -> Result<u16, VmError> {
         self.general
             .get(r as usize)
             .copied()
-            .ok_or(VmError::InvalidRegister)
+            .ok_or(VmError::InvalidRegister(r))
     }
 
     fn update_flags(&mut self, r: usize) {

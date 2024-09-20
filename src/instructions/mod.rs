@@ -41,6 +41,32 @@ pub enum Opcode {
     OpTrap, // Trap
 }
 
+use std::fmt;
+
+impl fmt::Display for Opcode {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let name = match self {
+            Opcode::OpBr => "Branch",
+            Opcode::OpAdd => "Add",
+            Opcode::OpLd => "Load",
+            Opcode::OpSt => "Store",
+            Opcode::OpJsr => "Jump to Subroutine",
+            Opcode::OpAnd => "Bitwise AND",
+            Opcode::OpLdr => "Load Base+Offset",
+            Opcode::OpStr => "Store Base+Offset",
+            Opcode::OpRti => "Return from Interrupt",
+            Opcode::OpNot => "Bitwise NOT",
+            Opcode::OpLdi => "Load Indirect",
+            Opcode::OpSti => "Store Indirect",
+            Opcode::OpJmp => "Jump",
+            Opcode::OpRes => "Reserved (Unused)",
+            Opcode::OpLea => "Load Effective Address",
+            Opcode::OpTrap => "Trap",
+        };
+        write!(f, "{}", name)
+    }
+}
+
 impl TryFrom<u16> for Opcode {
     type Error = VmError;
 
@@ -62,7 +88,7 @@ impl TryFrom<u16> for Opcode {
             13 => Ok(Opcode::OpRes),
             14 => Ok(Opcode::OpLea),
             15 => Ok(Opcode::OpTrap),
-            _ => Err(VmError::InvalidOpcode),
+            _ => Err(VmError::InvalidOpcode(value)),
         }
     }
 }

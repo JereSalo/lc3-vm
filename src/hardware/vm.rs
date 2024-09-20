@@ -79,7 +79,7 @@ impl VM {
             Opcode::OpSti => self.op_sti(instr),
             Opcode::OpStr => self.op_str(instr),
             Opcode::OpTrap => self.op_trap(instr),
-            _ => Err(VmError::BadOpcode), // OpRes and OpRti are Bad Opcodes.
+            _ => Err(VmError::BadOpcode(opcode)), // OpRes and OpRti are Bad Opcodes.
         }
     }
 
