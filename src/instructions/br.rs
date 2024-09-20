@@ -5,7 +5,7 @@ use super::sign_extend;
 impl VM {
     /// ## Branch
     /// Conditional jump with 9-bit offset in program execution based on the condition flags.
-    pub fn op_br(&mut self, instr: u16) {
+    pub fn op_br(&mut self, instr: u16) -> Result<(), VmError> {
         // nzp: Negative - Zero - Positive.
         let nzp_flags = (instr >> 9) & 0b111;
         let pc_offset = sign_extend(instr & 0x1FF, 9);

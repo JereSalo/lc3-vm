@@ -1,8 +1,7 @@
 use crate::hardware::{memory::Memory, registers::*, vm_error::VmError};
 use crate::instructions::*;
 use byteorder::{BigEndian, ReadBytesExt};
-use std::os::macos::raw;
-use std::{env, fs::File, io::{BufReader}};
+use std::{env, fs::File, io::BufReader};
 use termios::{tcsetattr, Termios, TCSANOW, ECHO, ICANON};
 
 pub struct VM {
@@ -82,7 +81,6 @@ impl VM {
             Opcode::OpTrap => self.op_trap(instr),
             _ => return Err(VmError::BadOpcode), // OpRes and OpRti are Bad Opcodes.
         }
-        Ok(())
     }
 
     fn read_image_file(&mut self, file_path: &str) -> Result<(), VmError> {

@@ -5,7 +5,7 @@ use super::sign_extend;
 impl VM {
     /// ## Load Effective Address
     /// Loads the effective address (not the value) into a register.
-    pub fn op_lea(&mut self, instr: u16) {
+    pub fn op_lea(&mut self, instr: u16) -> Result<(), VmError> {
         let dr = (instr >> 9) & 0b111; // Destination Register
         let pc_offset = sign_extend(instr & 0x1FF, 9);
 

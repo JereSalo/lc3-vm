@@ -1,4 +1,4 @@
-use std::fmt::{self};
+use std::fmt::{self, write};
 use std::io::Error;
 
 pub enum VmError {
@@ -7,7 +7,8 @@ pub enum VmError {
     BadOpcode,
     InvalidTrapCode,
     ReadImage(String),
-    InvalidArguments
+    InvalidArguments,
+    InvalidRegister
 }
 
 // Implementing `Display` for `VmError`
@@ -20,6 +21,7 @@ impl fmt::Display for VmError {
             VmError::InvalidTrapCode => write!(f, "Invalid Trap Code encountered"),
             VmError::ReadImage(msg) => write!(f, "Error reading image file: {}", msg),
             VmError::InvalidArguments => write!(f, "Invalid arguments: Use 'cargo run <image_file> ..'"),
+            VmError::InvalidRegister => write!(f, "Register out of bounds! Valid registers are 0 to 7.") // This would happen if programmer made a mistake
         }
     }
 }

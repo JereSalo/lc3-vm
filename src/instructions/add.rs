@@ -1,11 +1,11 @@
-use crate::hardware::vm::VM;
+use crate::hardware::{vm::VM, vm_error::VmError};
 
 use super::sign_extend;
 
 impl VM {
     /// ## Addition
     /// Adds two numbers and stores the result in a register.
-    pub fn op_add(&mut self, instr: u16) {
+    pub fn op_add(&mut self, instr: u16) -> Result<(), VmError> {
         // Destination Register (DR) number
         let dr = (instr >> 9) & 0x7;
 
@@ -18,15 +18,16 @@ impl VM {
         let final_value = if imm_flag == 1 {
             // Immediate mode: sign-extend the 5-bit imm value to 16bit and add to SR1
             let imm5 = sign_extend(instr & 0x1F, 5);
-            self.reg.get(sr1).wrapping_add(imm5)
+            self.reg.get(sr1)?.wrapping_add(imm5)
         } else {
             // Register mode: add the contents of both registers
             let r2 = instr & 0x7;
-            self.reg.get(sr1).wrapping_add(self.reg.get(r2))
+            self.reg.get(sr1)?.wrapping_add(self.reg.get(r2)?)
         };
         // Note: I used wrapping_add because it handles overflow cases correctly
 
         self.reg.update(dr, final_value);
+        Ok(())
     }
 }
 
@@ -117,6 +118,9 @@ mod tests {
 
         // r0 should now contain r1 + imm5 (3 + (-14) = -11)
         // Since we're using u16, -11 needs to be represented correctly in unsigned form
-        assert_eq!(vm.reg.get(0), (u16::MAX - 10)); // -11 in u16 is equivalent to 65525
+        assert_eq!(vm.reg.get(0).unw
+
+
+, (u16::MAX - 10)); // -11 in u16 is equivalent to 65525
     }
 }

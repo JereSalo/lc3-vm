@@ -5,7 +5,7 @@ use super::sign_extend;
 impl VM {
     /// ## Load
     /// Gets a destination register and a pc_offset, and writes into that register the value in memory location PC + Offset.
-    pub fn op_ld(&mut self, instr: u16) {
+    pub fn op_ld(&mut self, instr: u16) -> Result<(), VmError> {
         let dr = (instr >> 9) & 0b111; // Destination register.
         let pc_offset = sign_extend(instr & 0x1FF, 9);
 

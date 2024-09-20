@@ -3,7 +3,7 @@ use crate::hardware::vm::VM;
 impl VM {
     /// ## Jump
     /// Jumps to a location specified by a register.
-    pub fn op_jmp(&mut self, instr: u16) {
+    pub fn op_jmp(&mut self, instr: u16) -> Result<(), VmError> {
         let r = (instr >> 6) & 0b111;
 
         self.reg.pc = self.reg.get(r);

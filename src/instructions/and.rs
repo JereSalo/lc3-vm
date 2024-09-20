@@ -5,7 +5,7 @@ use super::sign_extend;
 impl VM {
     /// ## Bitwise AND
     /// Performs bitwise AND between two values and stores the result in a register.
-    pub fn op_and(&mut self, instr: u16) {
+    pub fn op_and(&mut self, instr: u16) -> Result<(), VmError> {
         // Destination Register (DR) number
         let dr = (instr >> 9) & 0x7;
 
@@ -18,11 +18,11 @@ impl VM {
         let final_value = if imm_flag == 1 {
             // Immediate mode: sign-extend the 5-bit imm value to 16bit and perform bitwise and with SR1
             let imm5 = sign_extend(instr & 0x1F, 5);
-            self.reg.get(sr1) & imm5
+            self.reg.get(sr1)? & imm5
         } else {
             // Register mode: Perform 'bitwise and' with both registers' content.
             let r2 = instr & 0x7;
-            self.reg.get(sr1) & self.reg.get(r2)
+            self.reg.get(sr1)? & self.reg.get(r2)
         };
 
         self.reg.update(dr, final_value);

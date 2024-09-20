@@ -5,7 +5,7 @@ use super::sign_extend;
 impl VM {
     /// ## Jump to Subroutine
     /// Saves the current PC and jumps to a subroutine.
-    pub fn op_jsr(&mut self, instr: u16) {
+    pub fn op_jsr(&mut self, instr: u16) -> Result<(), VmError> {
         let mode = (instr >> 11) & 1;
 
         self.reg.update(7, self.reg.pc); // Saves PC in register 7

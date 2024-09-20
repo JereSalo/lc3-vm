@@ -5,7 +5,7 @@ use super::sign_extend;
 impl VM {
     /// ## Load Base + Offset
     /// Loads a value from memory into a register using a base register and an offset.
-    pub fn op_ldr(&mut self, instr: u16) {
+    pub fn op_ldr(&mut self, instr: u16) -> Result<(), VmError> {
         let dr = (instr >> 9) & 0b111; // Destination register.
         let br = (instr >> 6) & 0b111; // Base register
         let br_offset = sign_extend(instr & 0b111111, 6); // Offset from Base Register

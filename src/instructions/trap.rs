@@ -1,4 +1,4 @@
-use std::io::{self, Read, Write};
+use std::{io::{self, Read, Write}, os::macos::raw};
 use termios::{tcsetattr, Termios, ECHO, ICANON, TCSANOW};
 
 use crate::hardware::{vm::VM, vm_error::VmError};
@@ -6,22 +6,16 @@ use crate::hardware::{vm::VM, vm_error::VmError};
 impl VM {
     /// ## Trap
     /// Executes a trap instruction, which handles I/O operations and system calls.
-    pub fn op_trap(&mut self, instr: u16) {
+    pub fn op_trap(&mut self, instr: u16) -> Result<(), VmError>{
         // Save the program counter to general-purpose register 7
         self.reg.update(7, self.reg.pc);
 
         // Check the lower byte of the instruction and execute the corresponding trap routine
         let raw_trap_code = instr & 0xFF;
 
-        match TrapCode::try_from(raw_trap_code) {
-            Ok(trap_code) => {
-                self.execute_trap(trap_code);
-            }
-            _ => {
-                eprintln!("Unknown trap code: {:#X}", raw_trap_code);
-                std::process::exit(1);
-            }
-        }
+        self.execute_trap(TrapCode::try_from(raw_trap_code)?)?;
+        
+        Ok(())
     }
 }
 
@@ -100,14 +94,14 @@ impl VM {
 
     fn trap_out(&mut self) -> Result<(), VmError> {
         // Extract the lower 8 bits (R0[7:0]) from the R0 register
-        let ch = (self.reg.get(0) & 0xFF) as u8 as char;
+        let ch = (self.reg.get(0)? & 0xFF) as u8 as char;
         print!("{}", ch);
         std::io::stdout().flush().map_err(|e| VmError::Io(e))?;
         Ok(())
     }
 
     fn trap_puts(&mut self) -> Result<(), VmError> {
-        let mut address = self.reg.get(0); // Starting address from R0
+        let mut address = self.reg.get(0)?; // Starting address from R0
 
         // Loop over the memory starting from the address in R0 until we hit a zero (null terminator)
         loop {
@@ -151,7 +145,7 @@ impl VM {
     }
 
     fn trap_putsp(&mut self) -> Result<(), VmError> {
-        let mut address = self.reg.get(0); // Starting address from R0
+        let mut address = self.reg.get(0)?; // Starting address from R0
 
         // Loop through memory until a word containing 0x0000 is found
         loop {
