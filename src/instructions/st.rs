@@ -3,14 +3,14 @@ use crate::hardware::vm::VM;
 use super::sign_extend;
 
 impl VM {
-    /// Store
-    /// Stores a register value into memory.
+    /// ## Store
+    /// Stores a register value into memory, address is offset from pc.
     pub fn op_st(&mut self, instr: u16) {
-        let sr: usize = ((instr >> 9) & 0b111).into();
+        let sr = (instr >> 9) & 0b111; // Source Register
         let pc_offset = sign_extend(instr & 0x1FF, 9);
 
-        let destination_address = (self.reg.pc.wrapping_add(pc_offset)).into();
-        let value = self.reg.general[sr];
+        let value = self.reg.get(sr);
+        let destination_address = self.reg.pc.wrapping_add(pc_offset);
 
         self.mem.write(destination_address, value);
     }
@@ -31,7 +31,7 @@ mod tests {
 
         vm.op_st(instr);
 
-        let actual_value = vm.mem.read((vm.reg.pc + 10).into());
+        let actual_value = vm.mem.read(vm.reg.pc + 10);
 
         assert_eq!(actual_value, expected_value);
     }

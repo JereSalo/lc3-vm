@@ -1,16 +1,17 @@
 use crate::hardware::vm::VM;
 
 impl VM {
-    /// Bitwise NOT
+    /// ## Bitwise NOT
     /// Performs a bitwise NOT (complement) on a value and stores the result in a register.
     pub fn op_not(&mut self, instr: u16) {
         // Destination Register (DR) number
-        let r0: usize = ((instr >> 9) & 0x7).into();
+        let dr = (instr >> 9) & 0x7;
 
         // Source Register
-        let r1: usize = ((instr >> 6) & 0x7).into();
+        let sr = (instr >> 6) & 0x7;
 
-        self.reg.update(r0, !self.reg.general[r1]);
+        // '!' is the Bitwise NOT operator for unsigned integers.
+        self.reg.update(dr, !self.reg.get(sr));
     }
 }
 
@@ -23,16 +24,15 @@ mod tests {
         let mut vm = VM::new();
 
         // Set source register R1
-        vm.reg.general[1] = 0b0000000000001111; // R1 = 15
+        vm.reg.update(1, 0b0000000000001111); // R1 = 15
 
         // Instruction: NOT R0, R1 (0001 000 001 000 000)
         let instr = 0b1001_000_001_000_000; // Opcode: NOT (1001), DR = 0, SR = 1
 
-        // Perform the NOT operation
         vm.op_not(instr);
 
         // Expected result: NOT 15 = 0b1111111111110000 (in 16-bit)
-        assert_eq!(vm.reg.general[0], 0b1111111111110000);
+        assert_eq!(vm.reg.get(0), 0b1111111111110000);
     }
 
     #[test]
@@ -40,16 +40,15 @@ mod tests {
         let mut vm = VM::new();
 
         // Set source register R1
-        vm.reg.general[1] = 0b0000000000000000; // R1 = 0
+        vm.reg.update(1, 0b0000000000000000); // R1 = 0
 
         // Instruction: NOT R0, R1 (0001 000 001 000 000)
         let instr = 0b1001_000_001_000_000; // Opcode: NOT (1001), DR = 0, SR = 1
 
-        // Perform the NOT operation
         vm.op_not(instr);
 
         // Expected result: NOT 0 = 0b1111111111111111 (in 16-bit)
-        assert_eq!(vm.reg.general[0], 0b1111111111111111);
+        assert_eq!(vm.reg.get(0), 0b1111111111111111);
     }
 
     #[test]
@@ -57,16 +56,15 @@ mod tests {
         let mut vm = VM::new();
 
         // Set source register R1
-        vm.reg.general[1] = 0b1111111111111111; // R1 = 65535
+        vm.reg.update(1, 0b1111111111111111); // R1 = 65535
 
         // Instruction: NOT R0, R1 (0001 000 001 000 000)
         let instr = 0b1001_000_001_000_000; // Opcode: NOT (1001), DR = 0, SR = 1
 
-        // Perform the NOT operation
         vm.op_not(instr);
 
         // Expected result: NOT 65535 = 0b0000000000000000 (in 16-bit)
-        assert_eq!(vm.reg.general[0], 0b0000000000000000);
+        assert_eq!(vm.reg.get(0), 0b0000000000000000);
     }
 
     #[test]
@@ -74,15 +72,14 @@ mod tests {
         let mut vm = VM::new();
 
         // Set source register R1 with mixed bits
-        vm.reg.general[1] = 0b1010101010101010; // R1 = 43690 (in decimal)
+        vm.reg.update(1, 0b1010101010101010); // R1 = 43690 (in decimal)
 
         // Instruction: NOT R0, R1 (0001 000 001 000 000)
         let instr = 0b1001_000_001_000_000; // Opcode: NOT (1001), DR = 0, SR = 1
 
-        // Perform the NOT operation
         vm.op_not(instr);
 
         // Expected result: NOT 43690 = 0b0101010101010101 (in 16-bit)
-        assert_eq!(vm.reg.general[0], 0b0101010101010101);
+        assert_eq!(vm.reg.get(0), 0b0101010101010101);
     }
 }

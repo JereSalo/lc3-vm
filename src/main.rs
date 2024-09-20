@@ -1,13 +1,11 @@
-use lc3_vm::hardware::vm::VM;
-use lc3_vm::utils::*;
+pub mod hardware;
+pub mod instructions;
+
+use hardware::vm::VM;
 fn main() {
-    // Load Arguments
-    load_arguments();
-
-    // Set up
-    set_up();
-
-    // Run VM
     let mut vm = VM::new();
+
+    vm.load_arguments();
+
     vm.run();
 }

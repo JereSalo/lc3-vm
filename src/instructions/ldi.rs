@@ -3,19 +3,19 @@ use crate::hardware::vm::VM;
 use super::sign_extend;
 
 impl VM {
-    /// Load Indirect
+    /// ## Load Indirect
     /// Loads a value indirectly from memory into a register.
     pub fn op_ldi(&mut self, instr: u16) {
         // Destination Register
-        let r0: usize = ((instr >> 9) & 0x7).into();
+        let r0 = (instr >> 9) & 0x7;
 
         // Offset from PC (Program Counter)
-        let pc_offset: u16 = sign_extend(instr & 0x1FF, 9);
+        let pc_offset = sign_extend(instr & 0x1FF, 9);
 
-        // Use of wrapping_add for handling overflow cases (that happen when adding to a sign-extended negative number)
-        let position: usize = self.reg.pc.wrapping_add(pc_offset).into();
+        let intermediate_address = self.reg.pc.wrapping_add(pc_offset);
 
-        let value = self.mem.read(self.mem.read(position).into());
+        let final_address = self.mem.read(intermediate_address);
+        let value = self.mem.read(final_address);
 
         self.reg.update(r0, value);
     }
@@ -28,7 +28,6 @@ mod tests {
     // Helper function to set up a VM instance for testing
     fn set_up_vm() -> VM {
         let mut vm = VM::new(); // Initialize VM with a `new` constructor
-
         vm.reg.pc = 0x3000; // Set program counter to an arbitrary starting value
         vm
     }
@@ -43,10 +42,10 @@ mod tests {
         let final_value = 2020;
 
         // At PC + offset, store the intermediate address
-        vm.mem.memory[(vm.reg.pc + pc_offset) as usize] = intermediate_address;
+        vm.mem.write(vm.reg.pc + pc_offset, intermediate_address);
 
         // At the intermediate address, store the final value
-        vm.mem.memory[intermediate_address as usize] = final_value;
+        vm.mem.write(intermediate_address, final_value);
 
         // LDI instruction: LDI r0, #offset
         // Opcode (LDI): 1010 (0xA), DR: r0 (000), PCoffset: 000001010 (10)
@@ -56,7 +55,7 @@ mod tests {
         vm.op_ldi(instr);
 
         // Check that r0 now contains the final value
-        assert_eq!(vm.reg.general[0], final_value);
+        assert_eq!(vm.reg.get(0), final_value);
     }
 
     #[test]
@@ -69,10 +68,13 @@ mod tests {
         let final_value = 0x5678;
 
         // At PC - 5, store the intermediate address
-        vm.mem.memory[(vm.reg.pc as i16 + pc_offset as i16) as usize] = intermediate_address;
+        vm.mem.write(
+            (vm.reg.pc as i16 + pc_offset as i16) as u16,
+            intermediate_address,
+        );
 
         // At the intermediate address, store the final value
-        vm.mem.memory[intermediate_address as usize] = final_value;
+        vm.mem.write(intermediate_address, final_value);
 
         // LDI instruction: LDI r0, #-5 (two's complement of 5 is 111111011 in 9 bits)
         let instr = 0b1010_000_111111011;
@@ -81,7 +83,7 @@ mod tests {
         vm.op_ldi(instr);
 
         // Check that r0 now contains the final value
-        assert_eq!(vm.reg.general[0], final_value);
+        assert_eq!(vm.reg.get(0), final_value);
     }
 
     #[test]
@@ -93,10 +95,10 @@ mod tests {
         let final_value = 0x9ABC;
 
         // At PC + 0, store 0 (so the next read will be from address 0)
-        vm.mem.memory[(vm.reg.pc + pc_offset) as usize] = 0;
+        vm.mem.write(vm.reg.pc + pc_offset, 0);
 
         // At memory address 0, store the final value
-        vm.mem.memory[0] = final_value;
+        vm.mem.write(0, final_value);
 
         // LDI instruction: LDI r0, #0
         let instr = 0b1010_000_000000000;
@@ -105,7 +107,7 @@ mod tests {
         vm.op_ldi(instr);
 
         // Check that r0 now contains the final value
-        assert_eq!(vm.reg.general[0], final_value);
+        assert_eq!(vm.reg.get(0), final_value);
     }
 
     #[test]
@@ -118,14 +120,12 @@ mod tests {
         let final_value = 0xDEAD;
 
         // At PC + offset, store the intermediate address
-        let offset_address = (vm.reg.pc + pc_offset) as usize;
+        let offset_address = (vm.reg.pc + pc_offset) as u16;
 
-        println!("offset address {}", offset_address);
-
-        vm.mem.memory[offset_address] = intermediate_address;
+        vm.mem.write(offset_address, intermediate_address);
 
         // At the intermediate address, store the final value
-        vm.mem.memory[intermediate_address as usize] = final_value;
+        vm.mem.write(intermediate_address, final_value);
 
         // LDI instruction: LDI r0, #511
         let instr = 0b1010_000_011111111; // 255 is the max value for a 9-bit signed offset
@@ -133,8 +133,7 @@ mod tests {
         // Execute LDI instruction
         vm.op_ldi(instr);
 
-        println!("{}", vm.mem.memory[intermediate_address as usize]);
         // Check that r0 now contains the final value
-        assert_eq!(vm.reg.general[0], final_value);
+        assert_eq!(vm.reg.get(0), final_value);
     }
 }

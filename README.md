@@ -1,5 +1,40 @@
 # Rusty LC3-VM
-Implementation of LC3-VM in Rust following [this guide](https://www.jmeiners.com/lc3-vm/).  
-The Virtual machine will be able to run any LC-3 program.
+Rust implementation of the LC3-VM, following [this guide](https://www.jmeiners.com/lc3-vm/) and [ISA specification](https://www.jmeiners.com/lc3-vm/supplies/lc3-isa.pdf). This VM can run any LC-3 program.
 
-This is WIP, the current implemented opcodes can be tested with ```cargo test```
+## Usage
+
+### Run Programs
+Use the Makefile for easy execution:
+```bash
+make 2048   # Run 2048.obj
+make rogue  # Run rogue.obj
+```
+
+### Testing
+Run opcode tests:
+```bash
+make test
+```
+
+### Code Quality
+Format and lint the code:
+```bash
+make fmt       # Format code
+make clippy    # Lint with clippy
+```
+
+### Build & Clean
+Build the project:
+```bash
+make build
+```
+Clean build artifacts:
+```bash
+make clean
+```
+
+### Full Project Check
+Run formatting, linting, tests, and build:
+```bash
+make check
+```
