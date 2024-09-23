@@ -1,8 +1,8 @@
-use crate::hardware::{memory::Memory, registers::*};
+use crate::components::{memory::Memory, registers::*, vm_error::VmError};
 use crate::instructions::*;
 use byteorder::{BigEndian, ReadBytesExt};
-use std::{env, fs::File, io::{BufReader}};
-use termios::{tcsetattr, Termios, TCSANOW, ECHO, ICANON};
+use std::{env, fs::File, io::BufReader};
+use termios::{tcsetattr, Termios, ECHO, ICANON, TCSANOW};
 
 pub struct VM {
     pub reg: Registers,
@@ -25,23 +25,24 @@ impl VM {
         }
     }
 
-    pub fn load_arguments(&mut self) {
+    pub fn load_arguments(&mut self) -> Result<(), VmError> {
         let args: Vec<String> = env::args().collect();
 
         if args.len() < 2 {
-            eprintln!("cargo run [image-file1] ...");
-            return;
+            return Err(VmError::InvalidArguments);
         }
 
         // Iterate over each argument (skipping the first one which is the program name)
         for arg in &args[1..] {
-            self.read_image_file(arg);
+            self.read_image_file(arg)?;
         }
+        Ok(())
     }
 
-    pub fn run(&mut self) {
+    pub fn run(&mut self) -> Result<(), VmError> {
+        self.load_arguments()?;
         // Disable input buffering and store the original terminal settings
-        let original_termios = disable_input_buffering();
+        let original_termios = disable_input_buffering()?;
 
         self.reg.pc = PC_START;
         while self.running {
@@ -54,20 +55,15 @@ impl VM {
 
             // Decode opcode
             let raw_opcode = instruction >> 12;
-            match Opcode::try_from(raw_opcode) {
-                Ok(opcode) => self.execute_instruction(opcode, instruction),
-                Err(_) => {
-                    eprintln!("Unknown opcode: {:#X}", raw_opcode);
-                    break; // It should finish execution if there's a bad opcode.
-                }
-            }
+            self.execute_instruction(Opcode::try_from(raw_opcode)?, instruction)?;
         }
 
         // Restore input buffering
-        restore_input_buffering(original_termios);
+        restore_input_buffering(original_termios)?;
+        Ok(())
     }
 
-    fn execute_instruction(&mut self, opcode: Opcode, instr: u16) {
+    fn execute_instruction(&mut self, opcode: Opcode, instr: u16) -> Result<(), VmError> {
         match opcode {
             Opcode::OpAdd => self.op_add(instr),
             Opcode::OpAnd => self.op_and(instr),
@@ -83,33 +79,45 @@ impl VM {
             Opcode::OpSti => self.op_sti(instr),
             Opcode::OpStr => self.op_str(instr),
             Opcode::OpTrap => self.op_trap(instr),
-            Opcode::OpRes => {}
-            Opcode::OpRti => {} // The last 2 are unused opcodes, I have to define what to do when they are called.
+            _ => Err(VmError::BadOpcode(opcode)), // OpRes and OpRti are Bad Opcodes.
         }
     }
 
-    fn read_image_file(&mut self, file_path: &str) {
-        let file = File::open(file_path).unwrap();
+    fn read_image_file(&mut self, file_path: &str) -> Result<(), VmError> {
+        // Attempt to open the file and map any I/O error to a `VmError::ReadImage`
+        let file = File::open(file_path).map_err(|e| {
+            VmError::ReadImage(format!("Failed to open file '{}': {}", file_path, e))
+        })?;
         let mut reader = BufReader::new(file);
 
-        let mut address = reader.read_u16::<BigEndian>().unwrap();
+        // Read the initial address from the file and map any I/O error to a `VmError::ReadImage`
+        let mut address = reader.read_u16::<BigEndian>().map_err(|e| {
+            VmError::ReadImage(format!(
+                "Failed to read initial address from '{}': {}",
+                file_path, e
+            ))
+        })?;
+
+        // Read instructions from the file and write them to memory until EOF or an error occurs
         while let Ok(instr) = reader.read_u16::<BigEndian>() {
             self.mem.write(address, instr);
             address += 1;
         }
+
+        Ok(()) // Return Ok(()) if no errors occurred
     }
 }
 
 // Helper function to disable input buffering and return the original terminal settings
-fn disable_input_buffering() -> Termios {
+fn disable_input_buffering() -> Result<Termios, VmError> {
     let stdin_fd = 0; // File descriptor for stdin
-    let mut termios = Termios::from_fd(stdin_fd).unwrap();
-    let original_termios = termios.clone();
+    let mut termios = Termios::from_fd(stdin_fd).map_err(VmError::Io)?;
     termios.c_lflag &= !(ICANON | ECHO); // Disable canonical mode and echo
-    tcsetattr(stdin_fd, TCSANOW, &termios).unwrap();
-    original_termios
+    tcsetattr(stdin_fd, TCSANOW, &termios).map_err(VmError::Io)?;
+    Ok(termios)
 }
 
-fn restore_input_buffering(original_termios: Termios) {
-    tcsetattr(0, TCSANOW, &original_termios).unwrap();
+fn restore_input_buffering(original_termios: Termios) -> Result<(), VmError> {
+    tcsetattr(0, TCSANOW, &original_termios).map_err(VmError::Io)?;
+    Ok(())
 }

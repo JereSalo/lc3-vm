@@ -26,6 +26,7 @@ impl Memory {
         }
     }
 
+    /// Reads value from memory, cannot fail because memory is 16-bit.
     pub fn read(&mut self, address: u16) -> u16 {
         if address == MemoryMappedRegister::MrKbsr as u16 {
             if let Err(e) = self.handle_keyboard() {

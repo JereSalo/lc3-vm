@@ -1,11 +1,9 @@
-pub mod hardware;
+pub mod components;
 pub mod instructions;
 
-use hardware::vm::VM;
+use components::vm::VM;
 fn main() {
     let mut vm = VM::new();
 
-    vm.load_arguments();
-
-    vm.run();
+    vm.run().unwrap_or_else(|e| eprintln!("{}", e));
 }
