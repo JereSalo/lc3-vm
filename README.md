@@ -16,25 +16,5 @@ Run opcode tests:
 make test
 ```
 
-### Code Quality
-Format and lint the code:
-```bash
-make fmt       # Format code
-make clippy    # Lint with clippy
-```
-
-### Build & Clean
-Build the project:
-```bash
-make build
-```
-Clean build artifacts:
-```bash
-make clean
-```
-
-### Full Project Check
-Run formatting, linting, tests, and build:
-```bash
-make check
-```
+## Demo
+https://github.com/user-attachments/assets/ef91b0b3-a24d-49d4-9460-17e31134fb0d
